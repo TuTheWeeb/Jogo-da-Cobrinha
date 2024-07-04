@@ -1,9 +1,12 @@
 from tkinter import *
 import random
-
 GAME_WIDTH = 700
 GAME_HEIGHT = 700
+<<<<<<< HEAD
 SPACE_SIZE = 100
+=======
+SPACE_SIZE = 45
+>>>>>>> refs/remotes/origin/main
 HEIGHT_PROPORTIONS = int((GAME_HEIGHT / SPACE_SIZE) - 1)
 WIDTH_PROPORTIONS = int((GAME_WIDTH / SPACE_SIZE) - 1)
 BODY_PARTS = 3
