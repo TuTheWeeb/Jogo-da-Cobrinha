@@ -3,7 +3,6 @@ import random
 GAME_WIDTH = 700
 GAME_HEIGHT = 700
 SPACE_SIZE = 100
-SPACE_SIZE = 45
 HEIGHT_PROPORTIONS = int((GAME_HEIGHT / SPACE_SIZE) - 1)
 WIDTH_PROPORTIONS = int((GAME_WIDTH / SPACE_SIZE) - 1)
 BODY_PARTS = 3
@@ -146,17 +145,18 @@ def change_direction(new_direction):
 
 #########################################
 
-# GAME PLAY LOOP
-snake = Snake()
-food = Food()
+if __name__ == "__main__":
+    # GAME PLAY LOOP
+    snake = Snake()
+    food = Food()
 
-# keyboard control
-window.bind('<Left>', lambda event: change_direction('left'))
-window.bind('<Right>', lambda event: change_direction('right'))
-window.bind('<Down>', lambda event: change_direction('down'))
-window.bind('<Up>', lambda event: change_direction('up'))
-window.bind('<Escape>', lambda event: window.quit())
+    # keyboard control
+    window.bind('<Left>', lambda event: change_direction('left'))
+    window.bind('<Right>', lambda event: change_direction('right'))
+    window.bind('<Down>', lambda event: change_direction('down'))
+    window.bind('<Up>', lambda event: change_direction('up'))
+    window.bind('<Escape>', lambda event: window.quit())   
 
-next_turn(snake, food)
+    next_turn(snake, food)
 
-window.mainloop()
+    window.mainloop()
