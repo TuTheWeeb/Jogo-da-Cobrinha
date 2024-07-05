@@ -1,5 +1,8 @@
+"""
 from tkinter import *
 import random
+
+
 GAME_WIDTH = 700
 GAME_HEIGHT = 700
 SPACE_SIZE = 100
@@ -18,7 +21,7 @@ SPEED = 100
 # Window creation
 window = Tk()
 
-# Window definitions 
+# Window definitions
 window.title("Jogo da Cobrinha")
 window.resizable(False, False)
 
@@ -160,3 +163,21 @@ if __name__ == "__main__":
     next_turn(snake, food)
 
     window.mainloop()
+"""
+
+import elementos as el
+import numpy as np
+from random import choice
+
+items = [el.Cobra(), el.Comida(), el.Parede()]
+mapa = []
+
+for x in range(4):
+    mapa.append([])
+    for y in range(4):
+        mapa[x].append(choice(items))
+
+mapa = np.array(mapa)
+print(np.info(mapa))
+print(mapa)
+
