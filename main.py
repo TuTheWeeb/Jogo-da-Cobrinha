@@ -1,3 +1,23 @@
+
+import elementos as el
+import mapa as map
+import numpy as np
+from random import choice
+import integracao as integ
+
+"""itens = [el.Cobra(), el.Fruta(), el.Parede()]
+mapa = map.Mapa()
+
+for x in range(4):
+    mapa.append([])
+    for y in range(4):
+        mapa[x].append(choice(itens))
+
+mapa = np.array(mapa)
+print(np.info(mapa))
+print(mapa)"""
+
+#Código do Video do gringo la
 """
 from tkinter import *
 import random
@@ -164,20 +184,4 @@ if __name__ == "__main__":
 
     window.mainloop()
 """
-
-import elementos as el
-import numpy as np
-from random import choice
-
-items = [el.Cobra(), el.Comida(), el.Parede()]
-mapa = []
-
-for x in range(4):
-    mapa.append([])
-    for y in range(4):
-        mapa[x].append(choice(items))
-
-mapa = np.array(mapa)
-print(np.info(mapa))
-print(mapa)
 
