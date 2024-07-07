@@ -41,6 +41,4 @@ class Mapa():
             ret += "\n"
 
         return ret
-    
 
-print(Mapa(5,5))
