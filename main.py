@@ -71,15 +71,20 @@ class App():
 
         self.lista_elementos = []
         self.Mapa = Mapa()
+        self.Mapa.gerar_cobra()
         self.renderizar()
 
     def addicionar_obj(self, obj):
         self.lista_elementos.append(obj)
+
     def renderizar(self):
         self.Mapa.gerar_fruta()
         for row in self.Mapa.matriz:
             for column in row:
                 if column.nome == "QuadradoVazio": continue
+                if column.nome == "Cobra":
+                    pass # controle de direção
+                    #column.direacao == ""
 
                 self.addicionar_obj(
                     self.canvas.create_rectangle(
@@ -90,6 +95,7 @@ class App():
                         fill=column.cor,
                         tags=column.nome
                     ))
+        
 
 if __name__ == "__main__":
     master = Tk()

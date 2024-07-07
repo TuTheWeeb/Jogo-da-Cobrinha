@@ -14,9 +14,12 @@ class QuadradoVazio():
 
 #Elementos que podem spawnar no mapa
 class Corpo_Cobra(QuadradoVazio):
-    def __init__(self, x, y, cor):
-        self.nome = "Corpo_Cobra"
-        self.coordenadas = [x, y]
+    def __init__(self, timer):
+        self.timer = timer
+
+    def tempo(self):
+        self.timer -= 1
+
 
 class Cobra(QuadradoVazio):
     def __init__(self, cor):
@@ -30,7 +33,8 @@ class Cobra(QuadradoVazio):
         self.nome = "Cobra"
         self.partes = 3
         self.cor = cor
-        self.coordenadas = []
+        self.coordenadas = [0,0]
+        self.direcao = "direita"
 
     def __str__(self):
         return self.nome

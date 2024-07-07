@@ -36,13 +36,18 @@ class Mapa():
 
     def gerar_fruta(self):
         """ Recebe uma coordenada aleatória e gera uma fruta aleatória na coordenada """
-        
+
         x, y = self.coordenada_random()
         self.matriz[x][y] = el.Fruta([x,y])
 
+    def gerar_cobra(self):
+        x, y = self.coordenada_random()
+
+        self.matriz[x][y] = el.Cobra("#FFFFFF")
+
     def __str__(self):
         """ Retorna String contendo os valores do Array """
-        
+
         #Sobrecarga de print para testes
         ret = ""
         for x in self.matriz:
