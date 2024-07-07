@@ -5,6 +5,7 @@ from constantes import *
 #from random import choice
 #import integracao as integ
 from tkinter import *
+from PIL import ImageTk, Image
 
 class App():
     def __init__(self, master=None):
@@ -23,16 +24,29 @@ class App():
         self.GameOver = Frame(self.master)
 
         # Coloca as paginas em modelo grid
-        self.Menu.grid(row=0, column=0)
-        self.Jogo.grid(row=0, column=0)
-        self.GameOver.grid(row=0, column=0)
-
+        #self.Menu.grid(row=0, column=0, sticky="nsew")
+        #self.Jogo.grid(row=0, column=0, sticky="nsew")
+        #self.GameOver.grid(row=0, column=0, sticky="nsew")
+        self.Menu.pack(fill="both", expand=True)
+        self.Jogo.pack(fill="both", expand=True)
+        self.GameOver.pack(fill="both", expand=True)
         self.menu()
 
     def menu(self):
         self.Menu.tkraise()
-        self.title = Label(self.Menu, text="Jogo da Cobrinha")
-        self.title.pack()
+        self.nome = Label(self.Menu, text="Jogo da Cobrinha!")
+        self.nome.pack(pady=10)
+
+        self.botao_inciar = Button(self.Menu, text="Jogar", command=self.jogar)
+        self.botao_inciar.pack(pady=GAME_HEIGHT//3, side="left")
+
+        self.botao_sair = Button(self.Menu, text="Sair", command=self.master.destroy)
+        self.botao_sair.pack(pady=GAME_HEIGHT//3, side="right")
+
+    def jogar(self):
+        pass
+
+
 
 
 if __name__ == "__main__":
