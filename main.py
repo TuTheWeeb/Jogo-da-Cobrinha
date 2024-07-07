@@ -74,19 +74,21 @@ class App():
         self.renderizar()
 
     def addicionar_obj(self, obj):
-
+        self.lista_elementos.append(obj)
     def renderizar(self):
         self.Mapa.gerar_fruta()
         for row in self.Mapa.matriz:
             for column in row:
-                if column.nome == "Fruta":
-                    self.lista_elementos.append(
-                        self.canvas.create_rectangle(
+                if column.nome == "QuadradoVazio": continue
+
+                self.addicionar_obj(
+                    self.canvas.create_rectangle(
                         column.coordenadas[0]*WIDTH_PROPORTIONS,
                         column.coordenadas[1]*HEIGHT_PROPORTIONS,
                         (column.coordenadas[0]*WIDTH_PROPORTIONS)+WIDTH_PROPORTIONS,
                         (column.coordenadas[1]*HEIGHT_PROPORTIONS)+HEIGHT_PROPORTIONS,
-                        fill=column.cor
+                        fill=column.cor,
+                        tags=column.nome
                     ))
         
 if __name__ == "__main__":
