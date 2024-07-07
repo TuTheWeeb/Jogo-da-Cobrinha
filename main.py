@@ -28,7 +28,6 @@ class App():
         self.Menu.grid(row=0, column=0, sticky="nsew")
         self.Jogo.grid(row=0, column=0, sticky="nsew")
         self.GameOver.grid(row=0, column=0, sticky="nsew")
-
         self.menu()
 
     def menu(self):
@@ -77,14 +76,34 @@ class App():
     def addicionar_obj(self, obj):
         self.lista_elementos.append(obj)
 
+    def limpar_elementos(self):
+        for item in self.lista_elementos:
+            self.canvas.delete(item)
+
+        self.lista_elementos = []
+
     def renderizar(self):
         self.Mapa.gerar_fruta()
+
+        # Condiciona que se na proxima posição for invalida então game over my boy
+        if self.Mapa.mover_cobra():
+            self.GameOver.tkraise()
+            self.game_over()
+
+        # Controles
+        self.master.bind('<Left>', lambda event: self.Mapa.mudar_direcao("esquerda"))
+        self.master.bind('<Right>', lambda event: self.Mapa.mudar_direcao("direita"))
+        self.master.bind('<Down>', lambda event: self.Mapa.mudar_direcao("baixo"))
+        self.master.bind('<Up>', lambda event: self.Mapa.mudar_direcao("cima"))
+        self.master.bind('<Escape>', lambda event: self.master.quit())
+
+
         for row in self.Mapa.matriz:
             for column in row:
                 if column.nome == "QuadradoVazio": continue
-                if column.nome == "Cobra":
-                    pass # controle de direção
-                    #column.direacao == ""
+
+                # controle de direção
+                #column.direacao == ""
 
                 self.addicionar_obj(
                     self.canvas.create_rectangle(
@@ -95,7 +114,16 @@ class App():
                         fill=column.cor,
                         tags=column.nome
                     ))
-        
+
+        self.master.after(1000, self.renderizar)
+
+    def game_over(self):
+        for item in self.lista_elementos:
+            self.canvas.delete(item)
+
+        self.GameOver_msg = Label(self.GameOver, text="Game Over", font=("consolas", 40))
+        self.GameOver_msg.pack()
+
 
 if __name__ == "__main__":
     master = Tk()

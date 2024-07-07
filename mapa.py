@@ -42,8 +42,54 @@ class Mapa():
 
     def gerar_cobra(self):
         x, y = self.coordenada_random()
+        self.posicao_cobra = [x, y]
+        self.direcao = "direita"
 
         self.matriz[x][y] = el.Cobra("#FFFFFF")
+
+    def mudar_direcao(self, direcao):
+        self.direcao = direcao
+
+    def mover_cobra(self):
+        x_, y_ = self.posicao_cobra
+
+        if self.fora_da_matriz():
+            return True
+
+        if self.direcao == "direita":
+            self.posicao_cobra[0] += 1
+        elif self.direcao == "esquerda":
+            self.posicao_cobra[0] -= 1
+        elif self.direcao == "baixo":
+            self.posicao_cobra[1] += 1
+        elif self.direcao == "cima":
+            self.posicao_cobra[1] -= 1
+
+        x, y = self.posicao_cobra
+
+        self.matriz[x][y] = self.matriz[x_][y_]
+        self.matriz[x_][y_] = el.QuadradoVazio()
+
+        return False
+
+    def proxima_posicao(self):
+        posicao_cobra = self.posicao_cobra
+
+        if self.direcao == "direita":
+            posicao_cobra[0] += 1
+        elif self.direcao == "esquerda":
+            posicao_cobra[0] -= 1
+        elif self.direcao == "baixo":
+            posicao_cobra[1] += 1
+        elif self.direcao == "cima":
+            posicao_cobra[1] -= 1
+
+        return posicao_cobra
+
+    def fora_da_matriz(self):
+        x, y = self.proxima_posicao()
+        if x >= self.tamX or y >= self.tamY or x < 0 or y < 0:
+            return True
 
     def __str__(self):
         """ Retorna String contendo os valores do Array """

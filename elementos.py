@@ -34,7 +34,6 @@ class Cobra(QuadradoVazio):
         self.partes = 3
         self.cor = cor
         self.coordenadas = [0,0]
-        self.direcao = "direita"
 
     def __str__(self):
         return self.nome
