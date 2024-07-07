@@ -18,10 +18,7 @@ class Cobra():
         self.nome = "Cobra"
         self.partes = 3
         self.cor = cor
-        self.coordenadas = self.coordenadas_partes()
-        
-    def coordenadas_partes(self):
-        matriz_coords = np.empty(self.partes, 2) #matriz com "qnt de partes" de linhas e duas colunas (x e y) sei la ignora esse codigo 
+        self.coordenadas = []
         
 
 
