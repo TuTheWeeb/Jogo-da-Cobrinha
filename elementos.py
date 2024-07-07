@@ -10,19 +10,25 @@ class QuadradoVazio():
 
     def __str__(self):
         return self.nome
-    
+
 #Elementos que podem spawnar no mapa
+class Corpo_Cobra(QuadradoVazio):
+    def __init__(self, x, y, cor):
+        self.nome = "Corpo_Cobra"
+        self.coordenadas = [x, y]
+
 class Cobra(QuadradoVazio):
     def __init__(self, cor):
         self.nome = "Cobra"
         self.partes = 3
         self.cor = cor
         self.coordenadas = []
-        
-
 
     def __str__(self):
         return self.nome
+
+    def criar_corpo(self):
+        pass
 
 class Parede(QuadradoVazio):
     def __init__(self, coordenadas, tamanho: int):

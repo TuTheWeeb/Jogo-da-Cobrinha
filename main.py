@@ -90,7 +90,7 @@ class App():
                         fill=column.cor,
                         tags=column.nome
                     ))
-        
+
 if __name__ == "__main__":
     master = Tk()
     app = App(master)
