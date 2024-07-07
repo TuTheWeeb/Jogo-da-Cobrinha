@@ -2,8 +2,6 @@
 from constantes import *
 import numpy as np
 
-#não tinha porque as outras classes herdarem de quadrado. Talvez essa classe nem precise existir, depois checamos.
-#Talvez possamos usar o objeto quadrado só pra substituir um outro item que foi comido/sumiu?
 class QuadradoVazio():   
     def __init__(self): 
         self.nome = "Fundo"
@@ -13,7 +11,7 @@ class QuadradoVazio():
         return self.nome
     
 #Elementos que podem spawnar no mapa
-class Cobra():
+class Cobra(QuadradoVazio):
     def __init__(self, cor):
         self.nome = "Cobra"
         self.partes = 3
@@ -25,7 +23,7 @@ class Cobra():
     def __str__(self):
         return self.nome
 
-class Parede():
+class Parede(QuadradoVazio):
     def __init__(self, coordenadas, tamanho: int):
         self.nome = "Parede"
         self.cor = WALL_COLOR
@@ -36,7 +34,7 @@ class Parede():
         return self.nome
 
 #FRUTAS            
-class Fruta():
+class Fruta(QuadradoVazio):
     def __init__(self, coordenadas: list):
         self.coordenadas = coordenadas
 

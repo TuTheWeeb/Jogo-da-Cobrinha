@@ -1,6 +1,6 @@
 from constantes import *
-#import elementos as el
-#import mapa as map
+import elementos as el
+from mapa import Mapa
 #import numpy as np
 #from random import choice
 #import integracao as integ
@@ -69,6 +69,16 @@ class App():
         self.canvas = Canvas(self.Jogo, bg=BACKGROUND_COLOR, height=GAME_HEIGHT, width=GAME_WIDTH)
         self.canvas.pack()
 
+        self.lista_elementos = []
+        self.Mapa = Mapa()
+        self.renderizar()
+
+    def renderizar(self):
+        self.Mapa.gerar_fruta()
+        for row in self.Mapa.matriz:
+            for column in row:
+                if column == el.Fruta:
+                    print("Fruta!")
 
 if __name__ == "__main__":
     master = Tk()
