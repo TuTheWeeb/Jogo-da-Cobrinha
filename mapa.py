@@ -6,6 +6,7 @@ import numpy as np
 
 class Mapa():
     def __init__(self, tamX = 11, tamY = 11):
+        """ Cria um Objeto da Classe Mapa """
         self.tamX = tamX
         self.tamY = tamY
         self.criar_matriz()
@@ -13,14 +14,15 @@ class Mapa():
 
     def criar_matriz(self):
         """
-        Cria um array de tamX*tamY Quadrados
+        Cria um array para o Mapa
+
+        tamX -- Tamanho do Eixo X (Default = 11)
+        tamY -- Tamanho do Eixo Y (Default = 11)
         """
         self.matriz = np.array([ [el.QuadradoVazio() for x in range(self.tamX)] for y in range(self.tamY) ])
 
     def coordenada_random(self) -> list:
-        """ Gera uma coordenada aleatória dentro das dimensões do 
-            do mapa.
-        """
+        """ Retorna Coordenadas Aleatórias """
         x, y = rd.randint(0, self.tamX-1), rd.randint(0, self.tamY-1)
 
         if self.checa_se_existe(x, y):
@@ -29,18 +31,20 @@ class Mapa():
         return [x,y]
 
     def checa_se_existe(self, x, y):
+        """ Retorna True se a coordenada for válida, False se não for válida """
         return self.matriz[x][y] != el.QuadradoVazio
 
     def gerar_fruta(self):
+        """ Recebe uma coordenada aleatória e gera uma fruta aleatória na coordenada """
+        
         x, y = self.coordenada_random()
         lista_frutas = [el.Apple, el.Limao, el.Laranja]
         self.matriz[x][y] = rd.choice(lista_frutas)
 
     def __str__(self):
-        """
-        Sobrecarga de print para testes,
-        retorna uma string com o mapa. 
-        """
+        """ Retorna String contendo os valores do Array """
+        
+        #Sobrecarga de print para testes
         ret = ""
         for x in self.matriz:
             for y in x:
