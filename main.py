@@ -33,22 +33,31 @@ class App():
         self.menu()
 
     def menu(self):
+        """Cria a janela do menu inicial"""
         self.Menu.tkraise()
         self.nome = Label(self.Menu, text="Jogo da Cobrinha!")
         self.nome.pack(pady=10)
 
-        self.botao_inciar = Button(self.Menu, text="Jogar", command=self.jogar)
-        self.botao_inciar.pack(pady=GAME_HEIGHT//3, side="left")
+        fonte_botao=("Comic Sans", 15)
+        self.botao_inciar = Button(self.Menu, text="Jogar", font=fonte_botao, height= 5, width=20, background= "#e361f4", command=self.jogar)
+        self.botao_inciar.pack(pady=GAME_HEIGHT//3, side="bottom")
 
         self.botao_sair = Button(self.Menu, text="Sair", command=self.master.destroy)
-        self.botao_sair.pack(pady=GAME_HEIGHT//3, side="right")
+        self.botao_sair.pack(pady=GAME_HEIGHT//3, side="top")
 
-    def jogar(self):
-        pass
+    def jogar(self): #nao ta funcionando como comando do botao
+        score = 0
+        self.Jogo.tkraise()
 
+        #Label de pontuação
+        label = Label(self.Jogo, text="Score: {}".format(score),font=("consolas", 40))
+        label.pack()
 
+        #Criação da canvas 
+        canvas = Canvas(self.Jogo, bg=BACKGROUND_COLOR, height=GAME_HEIGHT, width=GAME_WIDTH)
+        canvas.pack()
 
-
+        
 if __name__ == "__main__":
     master = Tk()
     app = App(master)
