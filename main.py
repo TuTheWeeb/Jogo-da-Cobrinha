@@ -1,187 +1,43 @@
-
-import elementos as el
-import mapa as map
-import numpy as np
-from random import choice
-import integracao as integ
-
-"""itens = [el.Cobra(), el.Fruta(), el.Parede()]
-mapa = map.Mapa()
-
-for x in range(4):
-    mapa.append([])
-    for y in range(4):
-        mapa[x].append(choice(itens))
-
-mapa = np.array(mapa)
-print(np.info(mapa))
-print(mapa)"""
-
-#Código do Video do gringo la
-"""
+from constantes import *
+#import elementos as el
+#import mapa as map
+#import numpy as np
+#from random import choice
+#import integracao as integ
 from tkinter import *
-import random
 
+class App():
+    def __init__(self, master=None):
+        """
+        Define as caracteristicas da Applicação
+        """
+        # Definições
+        self.master = master
+        self.master.resizable(False, False)
+        self.master.title("Jogo da Cobrinha")
+        self.master.geometry(f"{GAME_WIDTH}x{GAME_HEIGHT}")
 
-GAME_WIDTH = 700
-GAME_HEIGHT = 700
-SPACE_SIZE = 100
-HEIGHT_PROPORTIONS = int((GAME_HEIGHT / SPACE_SIZE) - 1)
-WIDTH_PROPORTIONS = int((GAME_WIDTH / SPACE_SIZE) - 1)
-BODY_PARTS = 3
-SNAKE_COLOR = "#00FF00"
-FOOD_COLOR = "#FF0000"
-BACKGROUND_COLOR = "#263D42"
+        # Cria as paginas ou Frames
+        self.Menu = Frame(self.master)
+        self.Jogo = Frame(self.master)
+        self.GameOver = Frame(self.master)
 
-# Gameplay definitions
-score = 0
-direction = "down"
-SPEED = 100
+        # Coloca as paginas em modelo grid
+        self.Menu.grid(row=0, column=0)
+        self.Jogo.grid(row=0, column=0)
+        self.GameOver.grid(row=0, column=0)
 
-# Window creation
-window = Tk()
+        self.menu()
 
-# Window definitions
-window.title("Jogo da Cobrinha")
-window.resizable(False, False)
+    def menu(self):
+        self.Menu.tkraise()
+        self.title = Label(self.Menu, text="Jogo da Cobrinha")
+        self.title.pack()
 
-# Label creation and packing
-label = Label(window,
-              text="Score: {}".format(score),
-              font=("consolas", 40)
-              )
-label.pack()
-
-# Canvas creation
-canvas = Canvas(window, bg=BACKGROUND_COLOR, height=GAME_HEIGHT, width=GAME_WIDTH)
-canvas.pack()
-
-# Update window making it render
-window.update()
-
-# Getting window and screen info so that it can be placed in the middle of the screen
-window_width = window.winfo_width()
-window_height = window.winfo_height()
-
-screen_width = window.winfo_screenwidth()
-screen_height = window.winfo_screenheight()
-
-x = int((screen_width / 2) - (window_width / 2))
-y = int((screen_height / 2) - (window_height / 2))
-
-window.geometry(f"{window_width}x{window_height}+{x}+{y}")
-
-# Snake and Food definitions 
-class Snake():
-    def __init__(self):
-        self.body_size = BODY_PARTS
-        self.coordinates = []
-        self.squares = []
-        
-        for i in range(0, BODY_PARTS):
-            self.coordinates.append([0,0])
-        for x, y in self.coordinates:
-            square = canvas.create_rectangle(x, y, x + SPACE_SIZE, y + SPACE_SIZE, fill=SNAKE_COLOR, tag="snake")
-            self.squares.append(square)
-
-class Food():
-    def __init__(self):
-        x = random.randint(0, WIDTH_PROPORTIONS) * SPACE_SIZE
-        y = random.randint(0, HEIGHT_PROPORTIONS) * SPACE_SIZE
-        # Set coordinates
-        self.coordinates = [x, y]
-        canvas.create_oval(x, y, x + SPACE_SIZE, y + SPACE_SIZE, fill=FOOD_COLOR, tag="food")
-
-# GAME LOOP FUNCTIONS
-def game_over():
-    canvas.delete(ALL)
-    canvas.create_text(canvas.winfo_width() / 2, canvas.winfo_height() / 2, font=("consolas", 70), text="GAME OVER", fill="red", tag="gameover")
-
-def check_collisions(snake):
-    x, y = snake.coordinates[0]
-
-    if x < 0 or x >= GAME_WIDTH:
-        return False
-
-    if y < 0 or y >= GAME_HEIGHT:
-        return False
-
-    for body_part in snake.coordinates[1:]:
-        if x == body_part[0] and y == body_part[1]:
-            return False
-
-    return True
-
-def next_turn(snake, food):
-    # Unpacking the head of the snake
-    x, y = snake.coordinates[0]
-
-    # handles moving
-    if direction == "up":
-        y -= SPACE_SIZE
-    elif direction == "down":
-        y += SPACE_SIZE
-    elif direction == "left":
-        x -= SPACE_SIZE
-    elif direction == "right":
-        x += SPACE_SIZE
-
-    snake.coordinates.insert(0, (x, y))
-
-    square = canvas.create_rectangle(x, y, x + SPACE_SIZE, y + SPACE_SIZE, fill=SNAKE_COLOR, tag="snake")
-
-    snake.squares.insert(0, square)
-
-    if x == food.coordinates[0] and y == food.coordinates[1]:
-        global score
-        score += 1
-
-        label.config(text="Score: {}".format(score))
-
-        canvas.delete("food")
-
-        food = Food()
-
-    # Remove phantom body parts that don't exist anymore
-    else:
-        del snake.coordinates[-1]
-        canvas.delete(snake.squares[-1])
-        del snake.squares[-1]
-
-    if not check_collisions(snake):
-        game_over()
-
-    window.after(SPEED, next_turn, snake, food)
-
-def change_direction(new_direction):
-    global direction
-
-    if new_direction == "left" and direction != "right":
-        direction = "left"
-    elif new_direction == "right" and direction != "left":
-        direction = "right"
-    elif new_direction == "up" and direction != "down":
-        direction = "up"
-    elif new_direction == "down" and direction != "up":
-        direction = "down"
-
-
-#########################################
 
 if __name__ == "__main__":
-    # GAME PLAY LOOP
-    snake = Snake()
-    food = Food()
+    master = Tk()
+    app = App(master)
+    mainloop()
 
-    # keyboard control
-    window.bind('<Left>', lambda event: change_direction('left'))
-    window.bind('<Right>', lambda event: change_direction('right'))
-    window.bind('<Down>', lambda event: change_direction('down'))
-    window.bind('<Up>', lambda event: change_direction('up'))
-    window.bind('<Escape>', lambda event: window.quit())   
-
-    next_turn(snake, food)
-
-    window.mainloop()
-"""
 
