@@ -29,12 +29,11 @@ class Mapa():
         return [x,y]
 
     def checa_se_existe(self, x, y):
-        return self.matriz[x][y] != el.QuadradoVazio
+        return self.matriz[x][y].nome != "QuadradoVazio"
 
     def gerar_fruta(self):
         x, y = self.coordenada_random()
-        lista_frutas = [el.Apple, el.Limao, el.Laranja]
-        self.matriz[x][y] = rd.choice(lista_frutas)
+        self.matriz[x][y] = el.Fruta([x,y])
 
     def __str__(self):
         """

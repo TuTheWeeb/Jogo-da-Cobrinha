@@ -57,7 +57,7 @@ class App():
         self.botao_sair = Button(self.Menu, text="Sair", font=fonte, height=2, width=10, command=self.master.destroy)
         self.botao_sair.place(relx=0.7, rely=y_botao, anchor=CENTER)
 
-    def jogar(self): #nao ta funcionando como comando do botao
+    def jogar(self):
         self.Jogo.tkraise()
         self.score = 0
 
@@ -73,13 +73,22 @@ class App():
         self.Mapa = Mapa()
         self.renderizar()
 
+    def addicionar_obj(self, obj):
+
     def renderizar(self):
         self.Mapa.gerar_fruta()
         for row in self.Mapa.matriz:
             for column in row:
-                if column == el.Fruta:
-                    print("Fruta!")
-
+                if column.nome == "Fruta":
+                    self.lista_elementos.append(
+                        self.canvas.create_rectangle(
+                        column.coordenadas[0]*WIDTH_PROPORTIONS,
+                        column.coordenadas[1]*HEIGHT_PROPORTIONS,
+                        (column.coordenadas[0]*WIDTH_PROPORTIONS)+WIDTH_PROPORTIONS,
+                        (column.coordenadas[1]*HEIGHT_PROPORTIONS)+HEIGHT_PROPORTIONS,
+                        fill=column.cor
+                    ))
+        
 if __name__ == "__main__":
     master = Tk()
     app = App(master)

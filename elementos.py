@@ -1,10 +1,11 @@
 #Módulo para descrever os diferentes tipos de objetos que podem aparecer na canvas
 from constantes import *
 import numpy as np
+import random as rd
 
 class QuadradoVazio():   
     def __init__(self): 
-        self.nome = "Fundo"
+        self.nome = "QuadradoVazio"
         self.cor = BACKGROUND_COLOR
 
     def __str__(self):
@@ -36,28 +37,9 @@ class Parede(QuadradoVazio):
 #FRUTAS            
 class Fruta(QuadradoVazio):
     def __init__(self, coordenadas: list):
+        self.nome = "Fruta"
         self.coordenadas = coordenadas
-
+        self.pontos = rd.randint(1, 100)
+        self.cor = rd.choice([APPLE_COLOR, ORANGE_COLOR, LEMON_COLOR])
     def __str__(self):
         return self.nome
-    
-class Apple(Fruta):
-    def __init__super():
-        def __init__(self):
-            self.nome = "Maçã"
-            self.cor = APPLE_COLOR
-            self.pontos = 100
-
-class Laranja(Fruta):
-    def __init__super():
-        def __init__(self):
-            self.nome = "Laranja"
-            self.cor = ORANGE_COLOR
-            self.pontos = 450
-
-class Limao(Fruta):
-    def __init__super():
-        def __init__(self):
-            self.nome = "Limão"
-            self.cor = LEMON_COLOR
-            self.pontos = 55
