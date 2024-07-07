@@ -28,17 +28,24 @@ class App():
         self.Menu.grid(row=0, column=0, sticky="nsew")
         self.Jogo.grid(row=0, column=0, sticky="nsew")
         self.GameOver.grid(row=0, column=0, sticky="nsew")
-        #self.Menu.pack(fill="both", expand=True, pady=100)
-        #self.Jogo.pack(fill="both", expand=True)
-        #self.GameOver.pack(fill="both", expand=True)
+
         self.menu()
 
     def menu(self):
         """Cria a janela do menu inicial"""
 
+        background_image = Image.open('Cobra.jpg')
+        background_image = ImageTk.PhotoImage(background_image)
+
         fonte=("Comic Sans", 15)
 
         self.Menu.tkraise()
+
+        menu_canvas = Canvas(self.Menu, width=GAME_WIDTH, height=GAME_HEIGHT)
+        menu_canvas.background_image = background_image
+        menu_canvas.create_image(0, 0, anchor=NW, image=background_image)
+        menu_canvas.place(x=0,y=0)
+
         self.nome = Label(self.Menu, text="Jogo da Cobrinha!", font=fonte)
         self.nome.place(x=(GAME_WIDTH//2 - 90), y=10)
 
@@ -53,6 +60,7 @@ class App():
     def jogar(self): #nao ta funcionando como comando do botao
         self.Jogo.tkraise()
         self.score = 0
+
         #Label de pontuação
         self.label = Label(self.Jogo, text="Score: {}".format(self.score), font=("consolas", 40))
         self.label.pack()
