@@ -95,7 +95,7 @@ class App():
         self.lista_elementos = []
 
     def renderizar(self):
-        self.Mapa.gerar_fruta()
+        #self.Mapa.gerar_fruta()
 
         # Condiciona que se na proxima posição for invalida então game over my boy
         if self.Mapa.mover_cobra():
