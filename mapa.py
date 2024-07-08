@@ -14,7 +14,7 @@ class Mapa():
 
     def criar_matriz(self):
         """
-        Cria um array para o Mapa
+        Cria um array para o Mapa preenchido com QuadradoVazio
 
         tamX -- Tamanho do Eixo X (Default = 11)
         tamY -- Tamanho do Eixo Y (Default = 11)
@@ -41,6 +41,7 @@ class Mapa():
         self.matriz[x][y] = el.Fruta([x,y])
 
     def gerar_cobra(self):
+        """ Gera Cobra numa posição aleatoria apontada para a Direita"""
         x, y = self.coordenada_random()
         self.posicao_cobra = [x, y]
         self.direcao = "direita"
@@ -48,9 +49,11 @@ class Mapa():
         self.matriz[x][y] = el.Cobra("#FFFFFF")
 
     def mudar_direcao(self, direcao):
+        """Muda a direção da cobra"""
         self.direcao = direcao
 
     def mover_cobra(self):
+        """Move a Cobra na Direação dela"""
         x_, y_ = self.posicao_cobra
 
         if self.fora_da_matriz():
