@@ -11,6 +11,11 @@ class App():
     def __init__(self, master=None):
         """
         Define as caracteristicas da Applicação
+
+        Keywords:
+        Config -- 
+        Resizable -- Desabilita a alteraçao de tamanho da janela
+        Geometria -- Tamanho da Janela
         """
         # Definições
         self.master = master
@@ -19,6 +24,7 @@ class App():
         self.master.title("Jogo da Cobrinha")
         self.master.geometry(f"{GAME_WIDTH}x{GAME_HEIGHT}")
 
+        
         # Cria as paginas ou Frames
         self.Menu = Frame(self.master, height=GAME_HEIGHT, width=GAME_WIDTH)
         self.Jogo = Frame(self.master, height=GAME_HEIGHT, width=GAME_WIDTH)
@@ -39,17 +45,20 @@ class App():
         fonte=("Comic Sans", 15)
 
         self.Menu.tkraise()
-
+        
+        #Cria imagem de fundo 
         menu_canvas = Canvas(self.Menu, width=GAME_WIDTH, height=GAME_HEIGHT)
         menu_canvas.background_image = background_image
         menu_canvas.create_image(0, 0, anchor=NW, image=background_image)
         menu_canvas.place(x=0,y=0)
-
+        
+        #Cria titulo
         self.nome = Label(self.Menu, text="Jogo da Cobrinha!", font=fonte)
         self.nome.place(x=(GAME_WIDTH//2 - 90), y=10)
 
+        #Cria botoes
         y_botao = 0.6
-
+        
         self.botao_inciar = Button(self.Menu, text="Jogar", font=fonte, height=2, width=10, command=self.jogar)
         self.botao_inciar.place(relx=0.3, rely=y_botao, anchor=CENTER)
 
@@ -57,6 +66,9 @@ class App():
         self.botao_sair.place(relx=0.7, rely=y_botao, anchor=CENTER)
 
     def jogar(self):
+        """
+        Cria Funcionalidades do Jogo
+        """
         self.Jogo.tkraise()
         self.score = 0
 
