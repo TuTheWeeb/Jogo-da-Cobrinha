@@ -23,7 +23,7 @@ class Mapa():
 
     def coordenada_random(self) -> list:
         """ Retorna Coordenadas Aleatórias """
-        x, y = rd.randint(0, self.tamX-1), rd.randint(0, self.tamY-1)
+        x, y = rd.randint(1, self.tamX-1), rd.randint(1, self.tamY-1)
 
         if self.checa_se_existe(x, y):
             x, y = self.coordenada_random()
@@ -57,9 +57,6 @@ class Mapa():
         """Move a Cobra na Direação dela"""
         x_, y_ = self.posicao_cobra
 
-        if self.fora_da_matriz():
-            return True
-
         if self.direcao == "direita":
             self.posicao_cobra[0] += 1
         elif self.direcao == "esquerda":
@@ -71,29 +68,24 @@ class Mapa():
 
         x, y = self.posicao_cobra
 
+        # Checa se a cobra esta fora do mapa
+        if x >= self.tamX - 1 or y >= self.tamY - 1 or x < 0 or y < 0:
+            return True
+
+        # atualiza as coordenadas da cobra em sua classe
+        self.matriz[x_][y_].coordenadas = [x, y]
+
+        # Atualiza as coordenadas da cobra no mapa
         self.matriz[x][y] = self.matriz[x_][y_]
         self.matriz[x_][y_] = el.QuadradoVazio()
 
         return False
 
-    def proxima_posicao(self):
-        posicao_cobra = self.posicao_cobra
-
-        if self.direcao == "direita":
-            posicao_cobra[0] += 1
-        elif self.direcao == "esquerda":
-            posicao_cobra[0] -= 1
-        elif self.direcao == "baixo":
-            posicao_cobra[1] += 1
-        elif self.direcao == "cima":
-            posicao_cobra[1] -= 1
-
-        return posicao_cobra
-
-    def fora_da_matriz(self):
-        x, y = self.proxima_posicao()
-        if x >= self.tamX or y >= self.tamY or x < 0 or y < 0:
-            return True
+    def atualizar_mapa(self):
+        for x in range(self.tamX):
+            for y in range(self.tamY):
+                if self.matriz[x][y] != el.QuadradoVazio(): continue
+                self.matriz[x][y].timer -= 1
 
     def __str__(self):
         """ Retorna String contendo os valores do Array """

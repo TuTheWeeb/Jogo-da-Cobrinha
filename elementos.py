@@ -31,9 +31,10 @@ class Cobra(QuadradoVazio):
         Coordenadas -- Lista de Coordenadas para as partes da cobra
         """
         self.nome = "Cobra"
-        self.partes = 3
+        self.timer = 100
         self.cor = cor
         self.coordenadas = [0,0]
+        self.corpo = []
 
     def __str__(self):
         return self.nome
@@ -73,5 +74,6 @@ class Fruta(QuadradoVazio):
         self.coordenadas = coordenadas
         self.pontos = rd.randint(1, 100)
         self.cor = rd.choice([APPLE_COLOR, ORANGE_COLOR, LEMON_COLOR])
+        self.timer = 100
     def __str__(self):
         return self.nome

@@ -1,6 +1,7 @@
 from constantes import *
 import elementos as el
 from mapa import Mapa
+from time import sleep
 #import numpy as np
 #from random import choice
 #import integracao as integ
@@ -79,10 +80,20 @@ class App():
         #Criação da canvas 
         self.canvas = Canvas(self.Jogo, bg=BACKGROUND_COLOR, height=GAME_HEIGHT, width=GAME_WIDTH)
         self.canvas.pack()
+        
+        # Controles
+        self.master.bind('<Left>', lambda event: self.Mapa.mudar_direcao("esquerda"))
+        self.master.bind('<Right>', lambda event: self.Mapa.mudar_direcao("direita"))
+        self.master.bind('<Down>', lambda event: self.Mapa.mudar_direcao("baixo"))
+        self.master.bind('<Up>', lambda event: self.Mapa.mudar_direcao("cima"))
+        self.master.bind('<Escape>', lambda event: self.master.quit())
 
         self.lista_elementos = []
         self.Mapa = Mapa()
         self.Mapa.gerar_cobra()
+        #self.renderizar()        
+        #self.after_id = self.master.after(1000, self.renderizar)
+        self.after_id = []
         self.renderizar()
 
     def addicionar_obj(self, obj):
@@ -96,45 +107,58 @@ class App():
 
     def renderizar(self):
         #self.Mapa.gerar_fruta()
+        #sleep(1000)
 
         # Condiciona que se na proxima posição for invalida então game over my boy
         if self.Mapa.mover_cobra():
             self.GameOver.tkraise()
             self.game_over()
 
-        # Controles
-        self.master.bind('<Left>', lambda event: self.Mapa.mudar_direcao("esquerda"))
-        self.master.bind('<Right>', lambda event: self.Mapa.mudar_direcao("direita"))
-        self.master.bind('<Down>', lambda event: self.Mapa.mudar_direcao("baixo"))
-        self.master.bind('<Up>', lambda event: self.Mapa.mudar_direcao("cima"))
-        self.master.bind('<Escape>', lambda event: self.master.quit())
-
-
         for row in self.Mapa.matriz:
             for column in row:
                 if column.nome == "QuadradoVazio": continue
 
-                # controle de direção
-                #column.direacao == ""
+                if column.nome == "Cobra":
+                    x, y = self.Mapa.posicao_cobra
+                    self.Mapa.matriz[x][y].corpo.insert(0,
+                        self.canvas.create_rectangle(
+                            column.coordenadas[0]*WIDTH_PROPORTIONS,
+                            column.coordenadas[1]*HEIGHT_PROPORTIONS,
+                            (column.coordenadas[0]*WIDTH_PROPORTIONS)+WIDTH_PROPORTIONS,
+                            (column.coordenadas[1]*HEIGHT_PROPORTIONS)+HEIGHT_PROPORTIONS,
+                            fill=column.cor,
+                            tags=column.nome
+                        ))
 
-                self.addicionar_obj(
-                    self.canvas.create_rectangle(
-                        column.coordenadas[0]*WIDTH_PROPORTIONS,
-                        column.coordenadas[1]*HEIGHT_PROPORTIONS,
-                        (column.coordenadas[0]*WIDTH_PROPORTIONS)+WIDTH_PROPORTIONS,
-                        (column.coordenadas[1]*HEIGHT_PROPORTIONS)+HEIGHT_PROPORTIONS,
-                        fill=column.cor,
-                        tags=column.nome
-                    ))
+                elif len(self.lista_elementos) == 0:
+                    fruta = self.canvas.create_rectangle(
+                            column.coordenadas[0]*WIDTH_PROPORTIONS,
+                            column.coordenadas[1]*HEIGHT_PROPORTIONS,
+                            (column.coordenadas[0]*WIDTH_PROPORTIONS)+WIDTH_PROPORTIONS,
+                            (column.coordenadas[1]*HEIGHT_PROPORTIONS)+HEIGHT_PROPORTIONS,
+                            fill=column.cor,
+                            tags=column.nome
+                        )
+                    self.addicionar_obj(fruta)
 
-        self.master.after(1000, self.renderizar)
+
+
+        self.Mapa.atualizar_mapa()
+        #self.limpar_elementos()
+        self.after_id.append(self.master.after(250, self.renderizar))
 
     def game_over(self):
+        for ide in self.after_id:
+            self.master.after_cancel(ide)
+
         for item in self.lista_elementos:
             self.canvas.delete(item)
 
         self.GameOver_msg = Label(self.GameOver, text="Game Over", font=("consolas", 40))
-        self.GameOver_msg.pack()
+        self.GameOver_msg.place(relx=0.5, rely=0.3, anchor=CENTER)
+        
+        sleep(1)
+        self.master.quit()
 
 
 if __name__ == "__main__":
