@@ -45,12 +45,12 @@ class Mapa():
         x, y = self.coordenada_random()
         self.posicao_cobra = [x, y]
         self.direcao = "direita"
-        cobra = el.Cobra("#FFFFFF")
+        cobra = el.Cobra("#109f09")
         cobra.coordenadas = [x, y]
         self.matriz[x][y] = cobra
 
     def mudar_direcao(self, direcao):
-        """Muda a direção da cobra"""
+        """Muda a var direção que será depois atribuída à cobras"""
         self.direcao = direcao
 
     def mover_cobra(self):

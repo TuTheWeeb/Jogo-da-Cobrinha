@@ -1,4 +1,0 @@
-Precisa:
-- Mudar a cor da cobra para verde
-- Inserir a função gera_futa() no lugar correto
-- Excluir o rastro de renderização da cobra

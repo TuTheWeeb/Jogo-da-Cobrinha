@@ -1,0 +1,21 @@
+Seguem algumas tarefas a serem feitas. Atualizem com um OK do lado quando estiver funcionando.
+Se tiver uma noção das subtarefas envolvidas em uma tarefa mas não tiver ainda o código exato em mente,
+pode desenvolver aqui pra outra pessoa ajudar. 
+* Nicolas 
+
+- Inserir a função gera_futa() no lugar correto
+
+- Excluir o rastro de renderização da cobra (Como? desenvolver.)
+
+- Alguma coisa precisa de ajuste na checagem de colisão com a borda da tela,
+ porque ela só da game over depois de uns 2 segundos de colidir
+
+ - Alterar a função gera_cobra() para spawnar a cobra em um ponto e com direção fixa
+
+ - Aumentar o tamanho da matriz (tomando cuidado com as proporções gerais da canvas) para que os "pixels" sejam um pouco menores
+
+ - Atualizar doc strings sempre que possivel e revisar quando tudo estiver funcionando
+
+ - Trabalhar no spawn das paredes
+
+ - Não permitir que a cobra se mova em 180 graus (indo pra direita, nao pode ir diretamente para a esquerda)
