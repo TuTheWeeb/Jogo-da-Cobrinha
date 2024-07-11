@@ -1,21 +1,43 @@
-Seguem algumas tarefas a serem feitas. Atualizem com um OK do lado quando estiver funcionando.
+Seguem algumas tarefas a serem feitas. Atualizem com um >OK< do lado quando estiver funcionando.
 Se tiver uma noção das subtarefas envolvidas em uma tarefa mas não tiver ainda o código exato em mente,
 pode desenvolver aqui pra outra pessoa ajudar. 
 * Nicolas 
 
-- Inserir a função gera_futa() no lugar correto
+- Alterar a função gera_cobra() para spawnar a cobra em um ponto e com direção fixa >OK<
 
-- Excluir o rastro de renderização da cobra (Como? desenvolver.)
+- Aumentar o tamanho da matriz (tomando cuidado com as proporções gerais da canvas) para que os "pixels" sejam um pouco menores >OK?< 
+    (Funciona, mas gera um erro quando a cobra ultrapassa o limite da tela.)
+
+- Excluir o rastro de renderização da cobra (Como? desenvolver.) >OK?<
+    Criei o objeto QuadradoRenderizado para que a cada ciclo de renderizar() o rastro da cobra seja apagado,
+    mas sem renderizar todos os QuadradoVazio. Após a renderização do QuadradoRenderizado pelo TK, ele é substituido com
+    um QuadradoVazio na matriz. Ainda não está funcionando. 
+
+        if objeto.nome == "QuadradoRenderizado":
+            x = objeto.coordenadas[0]
+            y = objeto.coordenadas[1]
+            self.canvas.create_rectangle(
+                x * WIDTH_PROPORTIONS,
+                y * HEIGHT_PROPORTIONS,
+                (x * WIDTH_PROPORTIONS)+WIDTH_PROPORTIONS,
+                (y * HEIGHT_PROPORTIONS)+HEIGHT_PROPORTIONS,
+                fill=objeto.cor, outline=objeto.cor,
+                        tags=objeto.nome
+                )
+                #inserindo um QuadradoVazio no lugar após renderizar o QuadradoRenderizado
+                self.Mapa.matriz[x][y] = el.QuadradoVazio
+
+
+
+                
 
 - Alguma coisa precisa de ajuste na checagem de colisão com a borda da tela,
- porque ela só da game over depois de uns 2 segundos de colidir
+porque ela só da game over depois de uns 2 segundos de colidir
 
- - Alterar a função gera_cobra() para spawnar a cobra em um ponto e com direção fixa
+- Atualizar doc strings sempre que possivel e revisar quando tudo estiver funcionando
 
- - Aumentar o tamanho da matriz (tomando cuidado com as proporções gerais da canvas) para que os "pixels" sejam um pouco menores
+- Trabalhar no spawn das paredes
 
- - Atualizar doc strings sempre que possivel e revisar quando tudo estiver funcionando
+- Não permitir que a cobra se mova em 180 graus (indo pra direita, nao pode ir diretamente para a esquerda)
 
- - Trabalhar no spawn das paredes
-
- - Não permitir que a cobra se mova em 180 graus (indo pra direita, nao pode ir diretamente para a esquerda)
+- Ajustar a posição da master. Ela não esta no meio da tela.

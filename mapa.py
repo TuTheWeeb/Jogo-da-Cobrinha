@@ -5,7 +5,7 @@ import numpy as np
 
 
 class Mapa():
-    def __init__(self, tamX = 11, tamY = 11):
+    def __init__(self, tamX = PIXEL_CONTROL, tamY = PIXEL_CONTROL):
         """ Cria um Objeto da Classe Mapa """
         self.tamX = tamX
         self.tamY = tamY
@@ -16,8 +16,8 @@ class Mapa():
         """
         Cria um array para o Mapa preenchido com QuadradoVazio
 
-        tamX -- Tamanho do Eixo X (Default = 11)
-        tamY -- Tamanho do Eixo Y (Default = 11)
+        tamX -- Tamanho do Eixo X (Default = PIXEL_CONTROL+1)
+        tamY -- Tamanho do Eixo Y (Default = PIXEL_CONTROL+1)
         """
         self.matriz = np.array([ [el.QuadradoVazio() for x in range(self.tamX)] for y in range(self.tamY) ])
 
@@ -41,17 +41,31 @@ class Mapa():
         self.matriz[x][y] = el.Fruta([x,y])
 
     def gerar_cobra(self):
-        """ Gera Cobra numa posição aleatoria apontada para a Direita"""
-        x, y = self.coordenada_random()
+        """ Gera Cobra numa posição fixa apontada para a Direita"""
+        x, y = 2, 2
         self.posicao_cobra = [x, y]
-        self.direcao = "direita"
+        self.direcao = "baixo"
         cobra = el.Cobra("#109f09")
         cobra.coordenadas = [x, y]
         self.matriz[x][y] = cobra
 
-    def mudar_direcao(self, direcao):
+    def mudar_direcao(self, nova_direcao):
         """Muda a var direção que será depois atribuída à cobras"""
-        self.direcao = direcao
+
+        if self.direcao == "direita":
+            if nova_direcao != "esquerda":
+                self.direcao = nova_direcao
+        elif self.direcao == "esquerda":
+            if nova_direcao != "direita":
+                self.direcao = nova_direcao
+        elif self.direcao == "cima":
+            if nova_direcao != "baixo":
+                self.direcao = nova_direcao
+        elif self.direcao == "baixo":
+            if nova_direcao != "cima":
+                self.direcao = nova_direcao
+        
+            
 
     def mover_cobra(self):
         """Move a Cobra na Direação dela"""
@@ -77,14 +91,14 @@ class Mapa():
 
         # Atualiza as coordenadas da cobra no mapa
         self.matriz[x][y] = self.matriz[x_][y_]
-        self.matriz[x_][y_] = el.QuadradoVazio()
+        self.matriz[x_][y_] = el.QuadradoRenderizado([x_,y_])
 
         return False
 
     def atualizar_mapa(self):
         for x in range(self.tamX):
             for y in range(self.tamY):
-                if self.matriz[x][y] != el.QuadradoVazio(): continue
+                if self.matriz[x][y] != el.QuadradoVazio() or self.matriz[x][y] != el.QuadradoRenderizado : continue
                 self.matriz[x][y].timer -= 1
 
     def __str__(self):

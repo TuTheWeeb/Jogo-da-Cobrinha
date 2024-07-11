@@ -11,6 +11,17 @@ class QuadradoVazio():
 
     def __str__(self):
         return self.nome
+    
+class QuadradoRenderizado(QuadradoVazio):
+    def __init__(self, coordenadas: list):
+        """Cria classe para um quadrado que foi deixado vazio
+        após a cobra passar"""
+
+        self.nome = "QuadradoRenderizado"
+        self.coordenadas = coordenadas
+        self.cor = BACKGROUND_COLOR
+        
+        
 
 #Elementos que podem spawnar no mapa
 class Corpo_Cobra(QuadradoVazio):

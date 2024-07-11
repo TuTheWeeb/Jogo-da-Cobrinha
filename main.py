@@ -89,14 +89,13 @@ class App():
         self.master.bind('<Escape>', lambda event: self.master.quit())
 
         self.lista_elementos = []
-        self.Mapa = Mapa()
-        self.Mapa.gerar_cobra()
-        #self.renderizar()        
+        self.Mapa = Mapa()     
+        self.Mapa.gerar_cobra()           
         #self.after_id = self.master.after(1000, self.renderizar)
         self.after_id = []
         self.renderizar()
 
-    def addicionar_obj(self, obj):
+    def addicionar_obj(self, obj): #O que essa função faz??
         self.lista_elementos.append(obj)
 
     def limpar_elementos(self):
@@ -106,7 +105,7 @@ class App():
         self.lista_elementos = []
 
     def renderizar(self):
-        #self.Mapa.gerar_fruta()
+        self.Mapa.gerar_fruta()
         #sleep(1000)
 
         # Condiciona que se na proxima posição for invalida então game over my boy
@@ -114,38 +113,58 @@ class App():
             self.GameOver.tkraise()
             self.game_over()
 
-        for row in self.Mapa.matriz:
-            for column in row:
-                if column.nome == "QuadradoVazio": continue
+        for linha in self.Mapa.matriz:
+            for objeto in linha:
+                if objeto.nome == "QuadradoVazio": continue
 
-                if column.nome == "Cobra":
+                if objeto.nome == "QuadradoRenderizado":
+                    x = objeto.coordenadas[0]
+                    y = objeto.coordenadas[1]
+                    self.canvas.create_rectangle(
+                    x * WIDTH_PROPORTIONS,
+                    y * HEIGHT_PROPORTIONS,
+                    (x * WIDTH_PROPORTIONS)+WIDTH_PROPORTIONS,
+                    (y * HEIGHT_PROPORTIONS)+HEIGHT_PROPORTIONS,
+                    fill=objeto.cor, outline=objeto.cor,
+                        tags=objeto.nome
+                    )
+
+                    #inserindo um QuadradoVazio no lugar após renderizar o QuadradoRenderizado
+                    self.Mapa.matriz[x][y] = el.QuadradoVazio()
+
+                if objeto.nome == "Cobra":
                     x, y = self.Mapa.posicao_cobra
                     self.Mapa.matriz[x][y].corpo.insert(0,
                         self.canvas.create_rectangle(
-                            column.coordenadas[0]*WIDTH_PROPORTIONS,
-                            column.coordenadas[1]*HEIGHT_PROPORTIONS,
-                            (column.coordenadas[0]*WIDTH_PROPORTIONS)+WIDTH_PROPORTIONS,
-                            (column.coordenadas[1]*HEIGHT_PROPORTIONS)+HEIGHT_PROPORTIONS,
-                            fill=column.cor,
-                            tags=column.nome
+                            objeto.coordenadas[0]*WIDTH_PROPORTIONS,
+                            objeto.coordenadas[1]*HEIGHT_PROPORTIONS,
+                            (objeto.coordenadas[0]*WIDTH_PROPORTIONS)+WIDTH_PROPORTIONS,
+                            (objeto.coordenadas[1]*HEIGHT_PROPORTIONS)+HEIGHT_PROPORTIONS,
+                            fill=objeto.cor,
+                            tags=objeto.nome
                         ))
 
                 elif len(self.lista_elementos) == 0:
                     fruta = self.canvas.create_rectangle(
-                            column.coordenadas[0]*WIDTH_PROPORTIONS,
-                            column.coordenadas[1]*HEIGHT_PROPORTIONS,
-                            (column.coordenadas[0]*WIDTH_PROPORTIONS)+WIDTH_PROPORTIONS,
-                            (column.coordenadas[1]*HEIGHT_PROPORTIONS)+HEIGHT_PROPORTIONS,
-                            fill=column.cor,
-                            tags=column.nome
+                            objeto.coordenadas[0]*WIDTH_PROPORTIONS,
+                            objeto.coordenadas[1]*HEIGHT_PROPORTIONS,
+                            (objeto.coordenadas[0]*WIDTH_PROPORTIONS)+WIDTH_PROPORTIONS,
+                            (objeto.coordenadas[1]*HEIGHT_PROPORTIONS)+HEIGHT_PROPORTIONS,
+                            fill=objeto.cor,
+                            tags=objeto.nome
                         )
                     self.addicionar_obj(fruta)
 
 
-
         self.Mapa.atualizar_mapa()
         #self.limpar_elementos()
+        self.proximo_frame()
+
+    def proximo_frame(self):
         self.after_id.append(self.master.after(250, self.renderizar))
+        
+        
+
 
     def game_over(self):
         for ide in self.after_id:
