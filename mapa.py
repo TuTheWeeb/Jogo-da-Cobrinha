@@ -64,8 +64,6 @@ class Mapa():
         elif self.direcao == "baixo":
             if nova_direcao != "cima":
                 self.direcao = nova_direcao
-        
-            
 
     def mover_cobra(self):
         """Move a Cobra na Direação dela"""

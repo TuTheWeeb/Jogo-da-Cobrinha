@@ -103,11 +103,12 @@ class App():
             self.canvas.delete(item)
 
         self.lista_elementos = []
+        self.Mapa.gerar_fruta()
 
     def renderizar(self):
-        self.Mapa.gerar_fruta()
+        #self.Mapa.gerar_fruta()
         #sleep(1000)
-
+        #print(self.Mapa)
         # Condiciona que se na proxima posição for invalida então game over my boy
         if self.Mapa.mover_cobra():
             self.GameOver.tkraise()
@@ -116,7 +117,7 @@ class App():
         for linha in self.Mapa.matriz:
             for objeto in linha:
                 if objeto.nome == "QuadradoVazio": continue
-
+                """
                 if objeto.nome == "QuadradoRenderizado":
                     x = objeto.coordenadas[0]
                     y = objeto.coordenadas[1]
@@ -131,9 +132,15 @@ class App():
 
                     #inserindo um QuadradoVazio no lugar após renderizar o QuadradoRenderizado
                     self.Mapa.matriz[x][y] = el.QuadradoVazio()
+                """
 
                 if objeto.nome == "Cobra":
                     x, y = self.Mapa.posicao_cobra
+
+                    if len(self.Mapa.matriz[x][y].corpo) > self.Mapa.matriz[x][y].corpo.tamanho:
+                        self.canvas.delete(self.Mapa.matriz[x][y].corpo[-1])
+                        del self.Mapa.matriz[x][y].corpo[-1]
+
                     self.Mapa.matriz[x][y].corpo.insert(0,
                         self.canvas.create_rectangle(
                             objeto.coordenadas[0]*WIDTH_PROPORTIONS,
@@ -151,7 +158,7 @@ class App():
                             (objeto.coordenadas[0]*WIDTH_PROPORTIONS)+WIDTH_PROPORTIONS,
                             (objeto.coordenadas[1]*HEIGHT_PROPORTIONS)+HEIGHT_PROPORTIONS,
                             fill=objeto.cor,
-                            tags=objeto.nome
+                            tags=objeto.nome + ""
                         )
                     self.addicionar_obj(fruta)
 
@@ -162,9 +169,6 @@ class App():
 
     def proximo_frame(self):
         self.after_id.append(self.master.after(250, self.renderizar))
-        
-        
-
 
     def game_over(self):
         for ide in self.after_id:

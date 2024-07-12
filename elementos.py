@@ -42,10 +42,10 @@ class Cobra(QuadradoVazio):
         Coordenadas -- Lista de Coordenadas para as partes da cobra
         """
         self.nome = "Cobra"
-        self.timer = 100
         self.cor = cor
         self.coordenadas = [0,0]
         self.corpo = []
+        self.tamanho = BODY_PARTS
 
     def __str__(self):
         return self.nome
