@@ -173,7 +173,7 @@ class App():
         for item in self.lista_elementos:
             self.canvas.delete(item)
 
-        self.GameOver_msg = Label(self.GameOver, text="Game Over", font=("consolas", 40))
+        self.GameOver_msg = Label(self.GameOver, text="Game Over \n Pressione Esc para sair", font=("consolas", 40))
         self.GameOver_msg.place(relx=0.5, rely=0.3, anchor=CENTER)
         
 
