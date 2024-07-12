@@ -151,6 +151,7 @@ class App():
                             tags=objeto.nome
                         ))
 
+<<<<<<< HEAD
                 elif len(self.lista_elementos) == 0:
                     fruta = self.canvas.create_rectangle(
                             objeto.coordenadas[0]*WIDTH_PROPORTIONS,
@@ -161,6 +162,19 @@ class App():
                             tags=objeto.nome + ""
                         )
                     self.addicionar_obj(fruta)
+=======
+                elif objeto.nome == "Fruta":
+                    if len(self.lista_elementos) == 0:
+                        fruta = self.canvas.create_rectangle(
+                                objeto.coordenadas[0]*WIDTH_PROPORTIONS,
+                                objeto.coordenadas[1]*HEIGHT_PROPORTIONS,
+                                (objeto.coordenadas[0]*WIDTH_PROPORTIONS)+WIDTH_PROPORTIONS,
+                                (objeto.coordenadas[1]*HEIGHT_PROPORTIONS)+HEIGHT_PROPORTIONS,
+                                fill=objeto.cor,
+                                tags=objeto.nome
+                            )
+                        self.addicionar_obj(fruta)
+>>>>>>> df4af6d985f1c46f5751222ef69db4bced81370d
 
 
         self.Mapa.atualizar_mapa()
