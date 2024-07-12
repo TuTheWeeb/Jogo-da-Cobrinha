@@ -31,7 +31,7 @@ class Mapa():
         return [x,y]
 
     def checa_se_existe(self, x, y):
-        """ Retorna True se a coordenada for válida, False se não for válida """
+        """ Retorna True se a coordenada for inválida, False se for válida """
         return self.matriz[x][y].nome != "QuadradoVazio"
 
     def gerar_fruta(self):
