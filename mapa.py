@@ -41,7 +41,7 @@ class Mapa():
         self.matriz[x][y] = el.Fruta([x,y])
 
     def gerar_cobra(self):
-        """ Gera Cobra numa posição fixa apontada para a Direita"""
+        """ Gera Cobra numa posição fixa apontada para Baixo"""
         x, y = 2, 2
         self.posicao_cobra = [x, y]
         self.direcao = "baixo"
@@ -96,6 +96,7 @@ class Mapa():
         return False
 
     def atualizar_mapa(self):
+        """Checa todos os quadrados de corpo da cobra e atualiza o timer """
         for x in range(self.tamX):
             for y in range(self.tamY):
                 if self.matriz[x][y] != el.QuadradoVazio() or self.matriz[x][y] != el.QuadradoRenderizado : continue
