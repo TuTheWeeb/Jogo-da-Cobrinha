@@ -176,8 +176,7 @@ class App():
         self.GameOver_msg = Label(self.GameOver, text="Game Over", font=("consolas", 40))
         self.GameOver_msg.place(relx=0.5, rely=0.3, anchor=CENTER)
         
-        sleep(1)
-        self.master.quit()
+
 
 
 if __name__ == "__main__":
