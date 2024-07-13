@@ -4,9 +4,10 @@ import numpy as np
 import random as rd
 
 class QuadradoVazio():   
-    def __init__(self): 
+    def __init__(self, coordenadas: list): 
         """ Cria Classe para Background """
         self.nome = "QuadradoVazio"
+        self.coordenadas = coordenadas
         self.cor = BACKGROUND_COLOR
 
     def __str__(self):
@@ -44,8 +45,11 @@ class Cobra(QuadradoVazio):
         self.nome = "Cobra"
         self.cor = cor
         self.coordenadas = [0,0]
-        self.corpo = []
-        self.tamanho = BODY_PARTS
+        self.corpo = [self.coordenadas]
+        self.corpo_render = []
+        self.tamanho = 3
+        self.comeu = False
+        self.bateu = False
 
     def __str__(self):
         return self.nome
@@ -54,7 +58,7 @@ class Cobra(QuadradoVazio):
         pass
 
 class Parede(QuadradoVazio):
-    def __init__(self, coordenadas, tamanho: int):
+    def __init__(self, coordenadas: list):
         """
         Cria Objeto para as Paredes
 
@@ -62,10 +66,10 @@ class Parede(QuadradoVazio):
         Coordenadas -- Coordenadas onde vao gerar paredes no começo do jogo
         Tamanho -- Tamanho das paredes Geradas 
         """
+
         self.nome = "Parede"
         self.cor = WALL_COLOR
         self.coordenadas = coordenadas
-        self.tamanho = tamanho
 
     def __str__(self):
         return self.nome

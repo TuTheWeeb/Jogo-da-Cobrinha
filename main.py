@@ -1,8 +1,7 @@
 from constantes import *
 import elementos as el
 from mapa import Mapa
-from time import sleep
-#import numpy as np
+import numpy as np
 #from random import choice
 #import integracao as integ
 from tkinter import *
@@ -73,14 +72,18 @@ class App():
         self.Jogo.tkraise()
         self.score = 0
 
-        #Label de pontuação
-        self.label = Label(self.Jogo, text="Score: {}".format(self.score), font=("consolas", 40))
-        self.label.pack()
+        #Placar de pontuação
+        self.Placar = Label(self.Jogo, text="Score: {}".format(self.score), font=("consolas", 40))
+        self.Placar.pack()
 
         #Criação da canvas 
         self.canvas = Canvas(self.Jogo, bg=BACKGROUND_COLOR, height=GAME_HEIGHT, width=GAME_WIDTH)
         self.canvas.pack()
-        
+        self.fator_de_correcao = (GAME_WIDTH - MAPA_WIDTH)/2
+        self.grid = self.canvas.create_rectangle(self.fator_de_correcao, 0,
+                                                 MAPA_WIDTH + self.fator_de_correcao, MAPA_HEIGHT,
+                                                 fill='', width=10)
+
         # Controles
         self.master.bind('<Left>', lambda event: self.Mapa.mudar_direcao("esquerda"))
         self.master.bind('<Right>', lambda event: self.Mapa.mudar_direcao("direita"))
@@ -89,10 +92,12 @@ class App():
         self.master.bind('<Escape>', lambda event: self.master.quit())
 
         self.lista_elementos = []
-        self.Mapa = Mapa()     
-        self.Mapa.gerar_cobra()           
-        #self.after_id = self.master.after(1000, self.renderizar)
+        self.Mapa = Mapa()
+        self.Mapa.gerar_cobra()
+        self.Mapa.gerar_parede(2)
+        self.Mapa.gerar_fruta()
         self.after_id = []
+
         self.renderizar()
 
     def addicionar_obj(self, obj): #O que essa função faz??
@@ -103,12 +108,17 @@ class App():
             self.canvas.delete(item)
 
         self.lista_elementos = []
-        self.Mapa.gerar_fruta()
+
+    def diminuir_cobra(self):
+        cobra_ou_nao = self.Mapa.pegar_cobra()
+        x, y = cobra_ou_nao.coordenadas
+
+        self.canvas.delete(cobra_ou_nao.corpo_render[-1])
+        self.canvas.delete(cobra_ou_nao.corpo[-1])
+        self.Mapa.matriz[x][y].corpo.pop()
+        self.Mapa.matriz[x][y].corpo_render.pop()
 
     def renderizar(self):
-        #self.Mapa.gerar_fruta()
-        #sleep(1000)
-        #print(self.Mapa)
         # Condiciona que se na proxima posição for invalida então game over my boy
         if self.Mapa.mover_cobra():
             self.GameOver.tkraise()
@@ -117,59 +127,83 @@ class App():
         for linha in self.Mapa.matriz:
             for objeto in linha:
                 if objeto.nome == "QuadradoVazio": continue
-                """
-                if objeto.nome == "QuadradoRenderizado":
-                    x = objeto.coordenadas[0]
-                    y = objeto.coordenadas[1]
-                    self.canvas.create_rectangle(
-                    x * WIDTH_PROPORTIONS,
-                    y * HEIGHT_PROPORTIONS,
-                    (x * WIDTH_PROPORTIONS)+WIDTH_PROPORTIONS,
-                    (y * HEIGHT_PROPORTIONS)+HEIGHT_PROPORTIONS,
-                    fill=objeto.cor, outline=objeto.cor,
-                        tags=objeto.nome
-                    )
 
-                    #inserindo um QuadradoVazio no lugar após renderizar o QuadradoRenderizado
-                    self.Mapa.matriz[x][y] = el.QuadradoVazio()
-                """
+                cobra_ou_nao = self.Mapa.pegar_cobra()
+                if cobra_ou_nao == False: continue
+
+                if cobra_ou_nao.comeu == True:
+                    self.limpar_elementos()
+                    self.Mapa.gerar_fruta()
+                    self.Mapa.gerar_parede(1)
+
+                    global VELOCIDADE
+                    VELOCIDADE -= 5
+
+                    self.score += 1
+                    self.Placar.config(text="Score: {}".format(self.score))
+
+                    self.Mapa.resetar_atributo_comeu()
+
+                if cobra_ou_nao.bateu == True:
+                    self.limpar_elementos()
+                    self.Mapa.gerar_parede(2)
+
+                    VELOCIDADE -= 10
+
+                    self.score -= 1
+                    self.Placar.config(text="Score: {}".format(self.score))
+                    self.diminuir_cobra()
+
+                    self.Mapa.resetar_atributo_bateu()
 
                 if objeto.nome == "Cobra":
                     x, y = self.Mapa.posicao_cobra
 
-                    if len(self.Mapa.matriz[x][y].corpo) > self.Mapa.matriz[x][y].corpo.tamanho:
-                        self.canvas.delete(self.Mapa.matriz[x][y].corpo[-1])
+                    if len(self.Mapa.matriz[x][y].corpo_render) == self.Mapa.matriz[x][y].tamanho:
+                        self.canvas.delete(cobra_ou_nao.corpo_render[-1])
+                        self.canvas.delete(cobra_ou_nao.corpo[-1])
+                        del self.Mapa.matriz[x][y].corpo_render[-1]
                         del self.Mapa.matriz[x][y].corpo[-1]
 
-                    self.Mapa.matriz[x][y].corpo.insert(0,
-                        self.canvas.create_rectangle(
-                            objeto.coordenadas[0]*WIDTH_PROPORTIONS,
+                    corpo = self.canvas.create_rectangle(
+                            self.fator_de_correcao + objeto.coordenadas[0]*WIDTH_PROPORTIONS,
                             objeto.coordenadas[1]*HEIGHT_PROPORTIONS,
-                            (objeto.coordenadas[0]*WIDTH_PROPORTIONS)+WIDTH_PROPORTIONS,
+                            self.fator_de_correcao + (objeto.coordenadas[0]*WIDTH_PROPORTIONS)+WIDTH_PROPORTIONS,
                             (objeto.coordenadas[1]*HEIGHT_PROPORTIONS)+HEIGHT_PROPORTIONS,
                             fill=objeto.cor,
                             tags=objeto.nome
-                        ))
+                        )
+
+                    self.Mapa.matriz[x][y].corpo_render.insert(0, corpo)
+                    self.Mapa.matriz[x][y].corpo.insert(0, ([(self.canvas.coords(corpo)[0] - self.fator_de_correcao)//WIDTH_PROPORTIONS, self.canvas.coords(corpo)[1]//HEIGHT_PROPORTIONS]))
 
                 elif objeto.nome == "Fruta":
-                    if len(self.lista_elementos) == 0:
-                        fruta = self.canvas.create_rectangle(
-                                objeto.coordenadas[0]*WIDTH_PROPORTIONS,
+                    fruta = self.canvas.create_rectangle(
+                                self.fator_de_correcao + objeto.coordenadas[0]*WIDTH_PROPORTIONS,
                                 objeto.coordenadas[1]*HEIGHT_PROPORTIONS,
-                                (objeto.coordenadas[0]*WIDTH_PROPORTIONS)+WIDTH_PROPORTIONS,
+                                self.fator_de_correcao + (objeto.coordenadas[0]*WIDTH_PROPORTIONS)+WIDTH_PROPORTIONS,
                                 (objeto.coordenadas[1]*HEIGHT_PROPORTIONS)+HEIGHT_PROPORTIONS,
                                 fill=objeto.cor,
                                 tags=objeto.nome
                             )
-                        self.addicionar_obj(fruta)
-
+                    self.addicionar_obj(fruta)
+                elif objeto.nome == "Parede":
+                    parede = self.canvas.create_rectangle(
+                                self.fator_de_correcao + objeto.coordenadas[0]*WIDTH_PROPORTIONS,
+                                objeto.coordenadas[1]*HEIGHT_PROPORTIONS,
+                                self.fator_de_correcao + (objeto.coordenadas[0]*WIDTH_PROPORTIONS)+WIDTH_PROPORTIONS,
+                                (objeto.coordenadas[1]*HEIGHT_PROPORTIONS)+HEIGHT_PROPORTIONS,
+                                fill=objeto.cor,
+                                tags=objeto.nome
+                            )
+                    self.addicionar_obj(parede)
 
         self.Mapa.atualizar_mapa()
-        #self.limpar_elementos()
         self.proximo_frame()
 
     def proximo_frame(self):
-        self.after_id.append(self.master.after(250, self.renderizar))
+        self.after_id.append(self.master.after(VELOCIDADE, self.renderizar))
+        #self.after_id.append(self.master.after(250, self.renderizar))
 
     def game_over(self):
         for ide in self.after_id:
@@ -180,8 +214,6 @@ class App():
 
         self.GameOver_msg = Label(self.GameOver, text="Game Over \n Pressione Esc para sair", font=("consolas", 40))
         self.GameOver_msg.place(relx=0.5, rely=0.3, anchor=CENTER)
-        
-
 
 
 if __name__ == "__main__":
