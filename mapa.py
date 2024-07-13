@@ -2,7 +2,7 @@ import elementos as el
 import random as rd
 from constantes import *
 import numpy as np
-
+import integracao as integ
 
 class Mapa():
     def __init__(self, tamX = PIXEL_CONTROL, tamY = PIXEL_CONTROL):
@@ -16,8 +16,8 @@ class Mapa():
         """
         Cria um array para o Mapa preenchido com QuadradoVazio
 
-        tamX -- Tamanho do Eixo X (Default = PIXEL_CONTROL+1)
-        tamY -- Tamanho do Eixo Y (Default = PIXEL_CONTROL+1)
+        tamX -- Tamanho do Eixo X (Default = PIXEL_CONTROL)
+        tamY -- Tamanho do Eixo Y (Default = PIXEL_CONTROL)
         """
         self.matriz = np.array([ [el.QuadradoVazio([x,y]) for x in range(self.tamX)] for y in range(self.tamY) ])
 
@@ -25,12 +25,12 @@ class Mapa():
         """ Retorna Coordenadas Aleatórias """
         x, y = rd.randint(1, self.tamX-1), rd.randint(1, self.tamY-1)
 
-        if self.checa_se_existe(x, y):
+        if self.checa_se_existe(self,x, y):
             x, y = self.coordenada_random()
 
         return [x,y]
-
-    def checa_se_existe(self, x, y):
+    
+    def checa_se_existe(self, x, y)-> bool:
         """ Retorna True se a coordenada for inválida, False se for válida """
         condicao_quadrado = self.matriz[x][y].nome != "QuadradoVazio"
         condicao_parede = self.matriz[x][y].nome == "Parede"
@@ -44,16 +44,18 @@ class Mapa():
 
         return condicao_quadrado or condicao_cobra or condicao_parede or condicao_fruta
 
-    def gerar_parede(self, quantidade):
+
+    def gerar_parede(self, quantidade: int):
+        """ Gera uma quantidade pré-determinada de paredes em uma coordenada aleatória """
         for i in range(quantidade):
             x, y = self.coordenada_random()
             self.matriz[x][y] = el.Parede([x,y])
 
     def gerar_fruta(self):
-        """ Recebe uma coordenada aleatória e gera uma fruta aleatória na coordenada """
-
+        """ Gera uma fruta em uma coordenada aleatória """
         x, y = self.coordenada_random()
         self.matriz[x][y] = el.Fruta([x,y])
+
 
     def gerar_cobra(self):
         """ Gera Cobra numa posição fixa apontada para Baixo"""
@@ -64,8 +66,22 @@ class Mapa():
         cobra.coordenadas = [x, y]
         self.matriz[x][y] = cobra
 
+
+    def pegar_cobra(self):
+        """
+        Retorna uma copia da cobra
+        """
+        x, y = self.posicao_cobra
+
+        if x < 0 or x >= self.tamX or y < 0 or y >= self.tamY:
+            return False
+
+        return self.matriz[self.posicao_cobra[0]][self.posicao_cobra[1]]
+    
+
+    
     def mudar_direcao(self, nova_direcao):
-        """Muda a var direção que será depois atribuída à cobras"""
+        """Muda a var direção que será depois atribuída à Cobra e seu Corpo"""
 
         if self.direcao == "direita":
             if nova_direcao != "esquerda":
@@ -80,26 +96,10 @@ class Mapa():
             if nova_direcao != "cima":
                 self.direcao = nova_direcao
 
-    def pegar_cobra(self):
-        """
-        Retorna uma copia da cobra
-        """
-        x, y = self.posicao_cobra
 
-        if x < 0 or x >= self.tamX or y < 0 or y >= self.tamY:
-            return False
-
-        return self.matriz[self.posicao_cobra[0]][self.posicao_cobra[1]]
-
-    def resetar_atributo_comeu(self):
-        x, y = self.posicao_cobra
-        self.matriz[x][y].comeu = False
-
-    def resetar_atributo_bateu(self):
-        x, y = self.posicao_cobra
-        self.matriz[x][y].bateu = False
-
-    def posicao_futura(self):
+    def posicao_futura(self)-> list:
+        """Retorna as coordenadas da próxima posição em que a cobra vai estar
+        baseado na direção atual."""
         x, y = self.posicao_cobra
         x = int(x)
         y = int(y)
@@ -117,46 +117,34 @@ class Mapa():
         x_futuro = x + offset_x
         y_futuro = y + offset_y
 
-
         return [x_futuro, y_futuro]
-
-    def colisao_parede(self, x_futuro, y_futuro):
-        x, y = self.posicao_cobra
-
-        if self.matriz[x_futuro][y_futuro].nome == "Parede":
-            self.matriz[x_futuro][y_futuro] = el.QuadradoVazio([x_futuro, y_futuro])
-            self.matriz[x][y].tamanho -= 1
-            self.matriz[x][y].bateu = True
-
-    def colisao_fruta(self, x_futuro, y_futuro):
-        x, y = self.posicao_cobra
-
-        if self.matriz[x_futuro][y_futuro].nome == "Fruta":
-            self.matriz[x_futuro][y_futuro] = el.QuadradoVazio([x_futuro, y_futuro])
-            self.matriz[x][y].tamanho += 1
-            self.matriz[x][y].comeu = True
+    
 
     def colisao_cobra(self, x_futuro, y_futuro):
-        cobra = self.pegar_cobra()
-        for coordenadas in cobra.corpo:
-            if coordenadas == [x_futuro, y_futuro]:
-                return True
+            cobra = self.pegar_cobra()
+            for coordenadas in cobra.corpo:
+                if coordenadas == [x_futuro, y_futuro]:
+                    return True
 
-        return False
+            return False
 
-    def checar_colisao(self):
-        """Checa se a cobra colidiu com o corpo da cobra e retorna True se houver colisão"""
+
+    def checar_colisao(self)-> bool:
+        """ Checa se a cobra colidiu com algo. Colisões com Fruta ou Parede
+            geram eventos, colisão com o corpo da cobra retorna True. """
         x_futuro, y_futuro = self.posicao_futura()
 
         if x_futuro < 0 or x_futuro >= self.tamX or y_futuro < 0 or y_futuro >= self.tamY:
             return False
 
-        self.colisao_fruta(x_futuro, y_futuro)
-        self.colisao_parede(x_futuro, y_futuro)
-        return self.colisao_cobra(x_futuro, y_futuro)
+        integ.colisao_fruta(x_futuro, y_futuro)
+        integ.colisao_parede(x_futuro, y_futuro)
 
-    def mover_cobra(self):
-        """Move a Cobra na Direação dela"""
+        return self.colisao_cobra(x_futuro, y_futuro)
+    
+
+    def mover_cobra(self)-> bool:
+        """Move a Cobra na Direação dela. retorna True se houver colisão fatal."""
         x_, y_ = self.posicao_cobra
 
         if x_ >= self.tamX or y_ >= self.tamY or x_ < 0 or y_ < 0:
@@ -188,12 +176,6 @@ class Mapa():
 
         return colisao
 
-    def atualizar_mapa(self):
-        """Checa todos os quadrados de corpo da cobra e atualiza o timer """
-        for x in range(self.tamX):
-            for y in range(self.tamY):
-                if self.matriz[x][y] != "QuadradoVazio": continue
-                self.matriz[x][y].timer -= 1
 
     def __str__(self):
         """ Retorna String contendo os valores do Array """

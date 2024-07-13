@@ -1,7 +1,7 @@
-#Módulo para descrever os diferentes tipos de objetos que podem aparecer na canvas
 from constantes import *
-import numpy as np
 import random as rd
+
+"""Módulo para descrever os diferentes tipos de objetos que podem aparecer na canvas"""
 
 class QuadradoVazio():   
     def __init__(self, coordenadas: list): 
@@ -12,17 +12,7 @@ class QuadradoVazio():
 
     def __str__(self):
         return self.nome
-    
-class QuadradoRenderizado(QuadradoVazio):
-    def __init__(self, coordenadas: list):
-        """Cria classe para um quadrado que foi deixado vazio
-        após a cobra passar"""
-
-        self.nome = "QuadradoRenderizado"
-        self.coordenadas = coordenadas
-        self.cor = BACKGROUND_COLOR
-        
-        
+               
 
 #Elementos que podem spawnar no mapa
 class Corpo_Cobra(QuadradoVazio):
@@ -54,8 +44,6 @@ class Cobra(QuadradoVazio):
     def __str__(self):
         return self.nome
 
-    def criar_corpo(self):
-        pass
 
 class Parede(QuadradoVazio):
     def __init__(self, coordenadas: list):
@@ -90,5 +78,6 @@ class Fruta(QuadradoVazio):
         self.pontos = rd.randint(1, 100)
         self.cor = rd.choice([APPLE_COLOR, ORANGE_COLOR, LEMON_COLOR])
         self.timer = 100
+        
     def __str__(self):
         return self.nome
