@@ -1,8 +1,6 @@
 from constantes import *
-import elementos as el
 from mapa import Mapa
-import numpy as np
-#from random import choice
+import random as rd
 #import integracao as integ
 from tkinter import *
 from PIL import ImageTk, Image
@@ -24,7 +22,7 @@ class App():
         self.master.title("Jogo da Cobrinha")
         self.master.geometry(f"{GAME_WIDTH}x{GAME_HEIGHT}")
 
-        
+
         # Cria as paginas ou Frames
         self.Menu = Frame(self.master, height=GAME_HEIGHT, width=GAME_WIDTH)
         self.Jogo = Frame(self.master, height=GAME_HEIGHT, width=GAME_WIDTH)
@@ -134,7 +132,9 @@ class App():
                 if cobra_ou_nao.comeu == True:
                     self.limpar_elementos()
                     self.Mapa.gerar_fruta()
-                    self.Mapa.gerar_parede(1)
+
+                    if rd.random() > 0.5:
+                        self.Mapa.gerar_parede(1)
 
                     global VELOCIDADE
                     VELOCIDADE -= 5
