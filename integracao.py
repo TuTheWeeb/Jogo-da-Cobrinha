@@ -14,16 +14,10 @@ def resetar_atributo_bateu(mapa):
     x, y = mapa.posicao_cobra
     mapa.matriz[x][y].bateu = False
 
-
-def atualizar_timer(mapa):
-        """Checa todos os quadrados de corpo da cobra e atualiza o timer """
-        for x in range(mapa.tamX):
-            for y in range(mapa.tamY):
-                if mapa.matriz[x][y] != "QuadradoVazio": continue
-                mapa.matriz[x][y].timer -= 1
-
-
 def colisao_parede(mapa, x_futuro, y_futuro):
+    """
+    Detecta colisao da cobra com uma parede
+    """
     x, y = mapa.posicao_cobra
 
     if mapa.matriz[x_futuro][y_futuro].nome == "Parede":
@@ -31,10 +25,20 @@ def colisao_parede(mapa, x_futuro, y_futuro):
         mapa.matriz[x][y].tamanho -= 1
         mapa.matriz[x][y].bateu = True
 
-    return mapa.matriz
+def colisao_cobra(mapa, x_futuro, y_futuro):
+    """
+    Detecta colisao da cobra com o seu proprio corpo, utiliza um set porque a pesquisa é muito mais rápida.
+    """
+    coordenadas = set(mapa.pegar_cobra().corpo)
+    if (x_futuro, y_futuro) in coordenadas:
+        return True
 
+    return False
 
 def colisao_fruta(mapa, x_futuro, y_futuro):
+    """
+    Detecta colisao da cobra com uma fruta
+    """
     x, y = mapa.posicao_cobra
 
     if mapa.matriz[x_futuro][y_futuro].nome == "Fruta":

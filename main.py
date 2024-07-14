@@ -26,11 +26,13 @@ class App():
 
         # Cria as paginas ou Frames
         self.Menu = Frame(self.master, height=GAME_HEIGHT, width=GAME_WIDTH)
+        self.Seletor_Dificuldade = Frame(self.master, height=GAME_HEIGHT, width=GAME_WIDTH)
         self.Jogo = Frame(self.master, height=GAME_HEIGHT, width=GAME_WIDTH)
         self.GameOver = Frame(self.master, height=GAME_HEIGHT, width=GAME_WIDTH)
 
         # Coloca as paginas em modelo grid
         self.Menu.grid(row=0, column=0, sticky="nsew")
+        self.Seletor_Dificuldade.grid(row=0, column=0, sticky="nsew")
         self.Jogo.grid(row=0, column=0, sticky="nsew")
         self.GameOver.grid(row=0, column=0, sticky="nsew")
         self.menu()
@@ -39,30 +41,66 @@ class App():
         """Cria a janela do menu inicial"""
 
         background_image = Image.open('Cobra.jpg')
+        background_image = background_image.resize((GAME_WIDTH, GAME_HEIGHT))
         background_image = ImageTk.PhotoImage(background_image)
 
-        fonte=("Comic Sans", 15)
+        self.fonte=("Comic Sans", 15)
 
         self.Menu.tkraise()
         
         #Cria imagem de fundo 
-        menu_canvas = Canvas(self.Menu, width=GAME_WIDTH, height=GAME_HEIGHT)
-        menu_canvas.background_image = background_image
-        menu_canvas.create_image(0, 0, anchor=NW, image=background_image)
-        menu_canvas.place(x=0,y=0)
+        self.menu_canvas = Canvas(self.Menu, width=GAME_WIDTH, height=GAME_HEIGHT)
+        self.menu_canvas.background_image = background_image
+        self.menu_canvas.create_image(0, 0, anchor=NW, image=background_image)
+        self.menu_canvas.place(x=0,y=0)
         
         #Cria titulo
-        self.nome = Label(self.Menu, text="Jogo da Cobrinha!", font=fonte)
+        self.nome = Label(self.Menu, text="Jogo da Cobrinha!", font=self.fonte)
         self.nome.place(x=(GAME_WIDTH//2 - 90), y=10)
 
         #Cria botoes
         y_botao = 0.6
         
-        self.botao_inciar = Button(self.Menu, text="Jogar", font=fonte, height=2, width=10, command=self.jogar)
+        self.botao_inciar = Button(self.Menu, text="Jogar", font=self.fonte, height=2, width=10, command=self.dificuldade)
         self.botao_inciar.place(relx=0.3, rely=y_botao, anchor=CENTER)
 
-        self.botao_sair = Button(self.Menu, text="Sair", font=fonte, height=2, width=10, command=self.master.destroy)
+        self.botao_sair = Button(self.Menu, text="Sair", font=self.fonte, height=2, width=10, command=self.master.destroy)
         self.botao_sair.place(relx=0.7, rely=y_botao, anchor=CENTER)
+
+    def dificuldade(self):
+        self.botao_inciar.place_forget()
+        self.botao_sair.place_forget()
+
+        self.Facil = Button(self.Menu, text="Facil", font=self.fonte, height=2, width=10, command=self.facil)
+        self.Facil.place(relx=0.1, rely=0.5, anchor=CENTER)
+
+        self.Medio = Button(self.Menu, text="medio", font=self.fonte, height=2, width=10, command=self.medio)
+        self.Medio.place(relx=0.5, rely=0.5, anchor=CENTER)
+
+        self.Dificil = Button(self.Menu, text="dificil", font=self.fonte, height=2, width=10, command=self.dificil)
+        self.Dificil.place(relx=0.9, rely=0.5, anchor=CENTER)
+
+    def facil(self):
+        """
+        Seletor de dificuldade facil
+        """
+        global VELOCIDADE
+        VELOCIDADE = 350
+        self.jogar()
+
+    def medio(self):
+        "Seletor de dificuldade media"
+        global VELOCIDADE
+        VELOCIDADE = 250
+        self.jogar()
+
+    def dificil(self):
+        """
+        Seletor de dificuldade dificil
+        """
+        global VELOCIDADE
+        VELOCIDADE = 150
+        self.jogar()
 
     def jogar(self):
         """
@@ -106,12 +144,18 @@ class App():
         self.buffer_renderizacao.append(obj)
 
     def limpar_buffer(self):
+        """
+        Limpa o buffer de renderização.
+        """
         for item in self.buffer_renderizacao:
             self.canvas.delete(item)
 
         self.buffer_renderizacao = []
 
     def diminuir_cobra(self):
+        """
+        Diminui o tamanho da cobra
+        """
         cobra_ou_nao = self.mapa.pegar_cobra()
         x, y = cobra_ou_nao.coordenadas
 
@@ -133,14 +177,15 @@ class App():
                 if cobra_ou_nao == False: continue
 
                 if cobra_ou_nao.comeu == True:
-                    self.limpar_elementos()
+                    self.limpar_buffer()
                     self.mapa.gerar_fruta()
 
                     if rd.random() > 0.5:
                         self.mapa.gerar_parede(1)
 
                     global VELOCIDADE
-                    VELOCIDADE -= 5
+                    if VELOCIDADE > 70:
+                        VELOCIDADE -= 5
 
                     self.score += 1
                     self.Placar.config(text="Score: {}".format(self.score))
@@ -148,10 +193,11 @@ class App():
                     integ.resetar_atributo_comeu(self.mapa)
 
                 if cobra_ou_nao.bateu == True:
-                    self.limpar_elementos()
+                    self.limpar_buffer()
                     self.mapa.gerar_parede(2)
 
-                    VELOCIDADE -= 10
+                    if VELOCIDADE > 70:
+                        VELOCIDADE -= 10
 
                     self.score -= 1
                     self.Placar.config(text="Score: {}".format(self.score))
@@ -203,7 +249,6 @@ class App():
                             )
                     self.adicionar_objeto(parede)
 
-        integ.atualizar_timer(self.mapa)
         self.proximo_frame()
 
     def proximo_frame(self):

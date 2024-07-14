@@ -38,9 +38,9 @@ class Mapa():
         cobra = self.pegar_cobra()
         condicao_cobra = False
 
-        for c in cobra.corpo:
-            if c == [x,y]:
-                condicao_cobra = True
+        coordenadas = set(cobra.corpo)
+        if (x,y) in coordenadas:
+            condicao_cobra = True
 
         return condicao_quadrado or condicao_cobra or condicao_parede or condicao_fruta
 
@@ -76,8 +76,7 @@ class Mapa():
         if x < 0 or x >= self.tamX or y < 0 or y >= self.tamY:
             return False
 
-        return self.matriz[self.posicao_cobra[0]][self.posicao_cobra[1]]
-
+        return self.matriz[x][y]
 
 
     def mudar_direcao(self, nova_direcao):
@@ -119,15 +118,6 @@ class Mapa():
 
         return [x_futuro, y_futuro]
 
-
-    def colisao_cobra(self, x_futuro, y_futuro):
-        coordenadas = set(self.pegar_cobra().corpo)
-        if (x_futuro, y_futuro) in coordenadas:
-            return True
-
-        return False
-
-
     def checar_colisao(self)-> bool:
         """ Checa se a cobra colidiu com algo. Colisões com Fruta ou Parede
         geram eventos, colisão com o corpo da cobra retorna True. """
@@ -136,10 +126,10 @@ class Mapa():
         if x_futuro < 0 or x_futuro >= self.tamX or y_futuro < 0 or y_futuro >= self.tamY:
             return False
 
-        self.matriz = integ.colisao_fruta(self, x_futuro, y_futuro)
-        self.matriz = integ.colisao_parede(self, x_futuro, y_futuro)
+        integ.colisao_fruta(self, x_futuro, y_futuro)
+        integ.colisao_parede(self, x_futuro, y_futuro)
 
-        return self.colisao_cobra(x_futuro, y_futuro)
+        return integ.colisao_cobra(self, x_futuro, y_futuro)
 
 
     def mover_cobra(self)-> bool:
@@ -177,6 +167,9 @@ class Mapa():
 
 
     def atualizar_cobra(self, coordenadas: list, corpo):
+        """
+        Atualiza a o corpo da cobra
+        """
         x, y = self.posicao_cobra
         self.matriz[x][y].corpo_render.insert(0, corpo)
         self.matriz[x][y].corpo.insert(0, (( coordenadas[0]//WIDTH_PROPORTIONS, coordenadas[1]//HEIGHT_PROPORTIONS )))
