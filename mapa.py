@@ -25,12 +25,12 @@ class Mapa():
         """ Retorna Coordenadas Aleatórias """
         x, y = rd.randint(1, self.tamX-1), rd.randint(1, self.tamY-1)
 
-        if self.checa_se_existe(self,x, y):
+        if self.checa_se_existe(x, y):
             x, y = self.coordenada_random()
 
         return [x,y]
-    
-    def checa_se_existe(self, x, y)-> bool:
+
+    def checa_se_existe(self, x, y) -> bool:
         """ Retorna True se a coordenada for inválida, False se for válida """
         condicao_quadrado = self.matriz[x][y].nome != "QuadradoVazio"
         condicao_parede = self.matriz[x][y].nome == "Parede"
@@ -77,9 +77,9 @@ class Mapa():
             return False
 
         return self.matriz[self.posicao_cobra[0]][self.posicao_cobra[1]]
-    
 
-    
+
+
     def mudar_direcao(self, nova_direcao):
         """Muda a var direção que será depois atribuída à Cobra e seu Corpo"""
 
@@ -118,30 +118,29 @@ class Mapa():
         y_futuro = y + offset_y
 
         return [x_futuro, y_futuro]
-    
+
 
     def colisao_cobra(self, x_futuro, y_futuro):
-            cobra = self.pegar_cobra()
-            for coordenadas in cobra.corpo:
-                if coordenadas == [x_futuro, y_futuro]:
-                    return True
+        coordenadas = set(self.pegar_cobra().corpo)
+        if (x_futuro, y_futuro) in coordenadas:
+            return True
 
-            return False
+        return False
 
 
     def checar_colisao(self)-> bool:
         """ Checa se a cobra colidiu com algo. Colisões com Fruta ou Parede
-            geram eventos, colisão com o corpo da cobra retorna True. """
+        geram eventos, colisão com o corpo da cobra retorna True. """
         x_futuro, y_futuro = self.posicao_futura()
 
         if x_futuro < 0 or x_futuro >= self.tamX or y_futuro < 0 or y_futuro >= self.tamY:
             return False
 
-        integ.colisao_fruta(x_futuro, y_futuro)
-        integ.colisao_parede(x_futuro, y_futuro)
+        self.matriz = integ.colisao_fruta(self, x_futuro, y_futuro)
+        self.matriz = integ.colisao_parede(self, x_futuro, y_futuro)
 
         return self.colisao_cobra(x_futuro, y_futuro)
-    
+
 
     def mover_cobra(self)-> bool:
         """Move a Cobra na Direação dela. retorna True se houver colisão fatal."""
@@ -168,7 +167,7 @@ class Mapa():
             return True
 
         # atualiza as coordenadas da cobra em sua classe
-        self.matriz[x_][y_].coordenadas = [x, y]
+        self.matriz[x_][y_].coordenadas = (x, y)
 
         # Atualiza as coordenadas da cobra no mapa
         self.matriz[x][y] = self.matriz[x_][y_]
@@ -176,6 +175,11 @@ class Mapa():
 
         return colisao
 
+
+    def atualizar_cobra(self, coordenadas: list, corpo):
+        x, y = self.posicao_cobra
+        self.matriz[x][y].corpo_render.insert(0, corpo)
+        self.matriz[x][y].corpo.insert(0, (( coordenadas[0]//WIDTH_PROPORTIONS, coordenadas[1]//HEIGHT_PROPORTIONS )))
 
     def __str__(self):
         """ Retorna String contendo os valores do Array """

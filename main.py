@@ -90,30 +90,32 @@ class App():
         self.master.bind('<Up>', lambda event: self.mapa.mudar_direcao("cima"))
         self.master.bind('<Escape>', lambda event: self.master.quit())
 
-        self.lista_elementos = []
+        self.buffer_renderizacao = []
         self.mapa = Mapa()
-        Mapa.gerar_cobra()
-        Mapa.gerar_parede(2)
-        Mapa.gerar_fruta()
+        self.mapa.gerar_cobra()
+        self.mapa.gerar_parede(2)
+        self.mapa.gerar_fruta()
         self.after_id = []
 
         self.renderizar()
 
-    def addicionar_obj(self, obj): #O que essa função faz??
-        self.lista_elementos.append(obj)
+    def adicionar_objeto(self, obj):
+        """
+        Adiciona um objeto ao buffer de renderização
+        """
+        self.buffer_renderizacao.append(obj)
 
-    def limpar_elementos(self):
-        for item in self.lista_elementos:
+    def limpar_buffer(self):
+        for item in self.buffer_renderizacao:
             self.canvas.delete(item)
 
-        self.lista_elementos = []
+        self.buffer_renderizacao = []
 
     def diminuir_cobra(self):
         cobra_ou_nao = self.mapa.pegar_cobra()
         x, y = cobra_ou_nao.coordenadas
 
         self.canvas.delete(cobra_ou_nao.corpo_render[-1])
-        self.canvas.delete(cobra_ou_nao.corpo[-1])
         self.mapa.matriz[x][y].corpo.pop()
         self.mapa.matriz[x][y].corpo_render.pop()
 
@@ -132,10 +134,10 @@ class App():
 
                 if cobra_ou_nao.comeu == True:
                     self.limpar_elementos()
-                    Mapa.gerar_fruta()
+                    self.mapa.gerar_fruta()
 
                     if rd.random() > 0.5:
-                        Mapa.gerar_parede(1)
+                        self.mapa.gerar_parede(1)
 
                     global VELOCIDADE
                     VELOCIDADE -= 5
@@ -160,9 +162,10 @@ class App():
                 if objeto.nome == "Cobra":
                     x, y = self.mapa.posicao_cobra
 
-                    if len(self.mapa.matriz[x][y].corpo_render) == self.mapa.matriz[x][y].tamanho:
+                    tamanho = len(self.mapa.matriz[x][y].corpo_render)
+
+                    if tamanho == self.mapa.matriz[x][y].tamanho and tamanho > 0:
                         self.canvas.delete(cobra_ou_nao.corpo_render[-1])
-                        self.canvas.delete(cobra_ou_nao.corpo[-1])
                         del self.mapa.matriz[x][y].corpo_render[-1]
                         del self.mapa.matriz[x][y].corpo[-1]
 
@@ -175,8 +178,9 @@ class App():
                             tags=objeto.nome
                         )
 
-                    self.mapa.matriz[x][y].corpo_render.insert(0, corpo)
-                    self.mapa.matriz[x][y].corpo.insert(0, ([(self.canvas.coords(corpo)[0] - self.fator_de_correcao)//WIDTH_PROPORTIONS, self.canvas.coords(corpo)[1]//HEIGHT_PROPORTIONS]))
+                    coordenadas = self.canvas.coords(corpo)
+                    coordenadas = (coordenadas[0] - self.fator_de_correcao, coordenadas[1])
+                    self.mapa.atualizar_cobra(coordenadas, corpo)
 
                 elif objeto.nome == "Fruta":
                     fruta = self.canvas.create_rectangle(
@@ -187,7 +191,7 @@ class App():
                                 fill=objeto.cor,
                                 tags=objeto.nome
                             )
-                    self.addicionar_obj(fruta)
+                    self.adicionar_objeto(fruta)
                 elif objeto.nome == "Parede":
                     parede = self.canvas.create_rectangle(
                                 self.fator_de_correcao + objeto.coordenadas[0]*WIDTH_PROPORTIONS,
@@ -197,7 +201,7 @@ class App():
                                 fill=objeto.cor,
                                 tags=objeto.nome
                             )
-                    self.addicionar_obj(parede)
+                    self.adicionar_objeto(parede)
 
         integ.atualizar_timer(self.mapa)
         self.proximo_frame()
@@ -211,7 +215,7 @@ class App():
         for ide in self.after_id:
             self.master.after_cancel(ide)
 
-        for item in self.lista_elementos:
+        for item in self.buffer_renderizacao:
             self.canvas.delete(item)
 
         self.GameOver_msg = Label(self.GameOver, text="Game Over \n Pressione Esc para sair", font=("consolas", 40))

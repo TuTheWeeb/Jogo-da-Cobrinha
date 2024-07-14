@@ -34,7 +34,7 @@ class Cobra(QuadradoVazio):
         """
         self.nome = "Cobra"
         self.cor = cor
-        self.coordenadas = [0,0]
+        self.coordenadas = (0,0)
         self.corpo = [self.coordenadas]
         self.corpo_render = []
         self.tamanho = 3
