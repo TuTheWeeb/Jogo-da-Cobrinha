@@ -4,7 +4,6 @@ import random as rd
 import integracao as integ
 from tkinter import *
 from PIL import ImageTk, Image
-#from playsound import playsound
 
 class App():
     def __init__(self, master=None):
