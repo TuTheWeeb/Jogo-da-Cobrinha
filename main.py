@@ -40,7 +40,7 @@ class App():
     def menu(self):
         """Cria a janela do menu inicial"""
 
-        background_image = Image.open('Cobra.jpg')
+        background_image = Image.open('Cobra.png')
         background_image = background_image.resize((GAME_WIDTH, GAME_HEIGHT))
         background_image = ImageTk.PhotoImage(background_image)
 
